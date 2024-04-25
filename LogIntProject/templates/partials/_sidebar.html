@@ -1,0 +1,82 @@
+{% load static %}
+
+<nav class="navbar-container">
+  <header class="navbar-header">
+    <div class="logo">
+      <div class="logoImg">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+      <div class="logoText">
+        <span href="{% static 'index'%}" >LogInt</span>
+      </div>
+    </div>
+  </header>
+
+    <ul class="navbar-links">
+
+      <li>
+        <a href="{% url 'index' %}">
+          <span class="nav-icon" data-label="Home">
+            <i class="fa-solid fa-house"></i>
+          </span>
+          <span class="nav-text">Home</span>
+        </a>
+        </li>
+
+      <li>
+        <a href="{% url 'reports' %}">
+          <span class="nav-icon" data-label="Reports">
+            <i class="fa fa-file" aria-hidden="true"></i>
+          </span>
+          <span class="nav-text">Reports</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'sources' %}">
+          <span class="nav-icon" data-label="Sources">
+            <i class="fa-solid fa-database"></i>
+          </span>
+          <span class="nav-text">Sources</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'history' %}">
+          <span class="nav-icon" data-label="History">
+            <i class="fa fa-history" aria-hidden="true"></i>
+          </span>
+          <span class="nav-text">History</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="{% url 'history' %}">
+          <span class="nav-icon" data-label="Emulator">
+            <i class="fa-solid fa-mobile"></i>
+                    </span>
+          <span class="nav-text">Emulator</span>
+        </a>
+      </li>
+
+  <!--  *****   Navbar Footer Starts   *****  -->
+  <div class="navbar-footer">
+
+    <div class="logoutBtn">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <p>Logout</p>
+    </div>
+
+      <div class="dark-light-mode">
+        <div class="btn-container">
+          <div class="button"></div>
+        </div>
+        <div class="text">Light Mode</div>
+      </div>
+
+  </div>
+  <!--  *****   Navbar Footer Ends   *****  -->
+
+</nav>
+<!--  *****   Navbar Container Ends   *****  -->

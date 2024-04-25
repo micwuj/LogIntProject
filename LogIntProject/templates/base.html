@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    {% comment %} <link rel="stylesheet" href="{% static 'css/font.css' %}"> {% endcomment %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <!-- Custom -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>LogInt</title>
+</head>
+<body>
+    {% comment %} {% include 'partials/_navbar.html' %}  {% endcomment %}
+    
+	<!-- Side Bar -->
+    {% include 'partials/_sidebar.html' %} 
+
+	<!-- Main content -->
+	<div class="pageContents">
+		{% block content %}
+		
+		{% endblock %}
+	</div>
+	
+
+    <!-- Footer -->
+    {% comment %} {% include 'partials/_footer.html' %} {% endcomment %}
+
+	<script type="text/javascript">
+		// Get references to DOM elements
+		var menuContainer = document.querySelector('.navbar-container');
+		var menuBtn = document.querySelector('.navbar-header .logo .logoImg i');
+		var body = document.querySelector('body');
+		var toggleBtn = document.querySelector('.btn-container .button');
+		var darkModeText = document.querySelector('.dark-light-mode .text');
+	
+		// Add event listeners
+		menuBtn.addEventListener('click', menuToggle);
+		toggleBtn.addEventListener('click', toggleDarkMode);
+	
+		// Check if dark mode is enabled in local storage
+		var isDarkModeEnabled = localStorage.getItem('darkModeEnabled') === 'true';
+		if (isDarkModeEnabled) {
+			enableDarkMode();
+		}
+	
+		function menuToggle() {
+			menuContainer.classList.toggle('active');
+		}
+	
+		function toggleDarkMode() {
+			var darkModeEnabled = toggleBtn.classList.toggle('active');
+			if (darkModeEnabled) {
+				enableDarkMode();
+			} else {
+				disableDarkMode();
+			}
+			localStorage.setItem('darkModeEnabled', darkModeEnabled ? 'true' : 'false');
+		}
+	
+		function enableDarkMode() {
+			body.classList.add('active');
+			darkModeText.innerHTML = 'Dark Mode';
+			localStorage.setItem('darkModeEnabled', 'true');
+		}
+	
+		function disableDarkMode() {
+			body.classList.remove('active');
+			darkModeText.innerHTML = 'Light Mode';
+			localStorage.setItem('darkModeEnabled', 'false');
+			
+		}
+	</script>
+	
+	
+</body>
+</html>
