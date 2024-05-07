@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1> Home </h1>
+
+
+<div class="mt-5 mb-3 w-25 d-inline">
+    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#infoModal">
+        New App +
+    </button>
+</div>
+<div class="w-75 d-inline invisible" id="actionButtons">
+  <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
+      Edit
+  </button>
+  <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoModal">
+      Delete
+  </button>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="infoModalLabel">New App (Integration)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newEntryForm">
+            <div class="mb-3">
+              <label for="nameInput" class="form-label">App Name</label>
+              <input type="text" class="form-control" id="nameInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="loginInput" class="form-label">Login</label>
+              <input type="text" class="form-control" id="loginInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="passwordInput" class="form-label">Password</label>
+              <input type="password" class="form-control" id="passwordInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="sourceInput" class="form-label">Source</label>
+              <select class="form-select" id="typeSelect">
+                <option value="Metabase">Metabase</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="customerInput" class="form-label">Customer</label>
+              <input type="text" class="form-control" id="customerInput">
+            </div>
+            <div class="mb-3">
+              <label for="typeSelect" class="form-label">Type</label>
+              <select class="form-select" id="typeSelect">
+                <option value="Web">Web</option>
+                <option value="Mobile">Mobile</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="uploadInput" class="form-label">APK file</label>
+              <input type="file" class="form-control mb-2" id="uploadInput">
+              <label for="uploadInput" class="form-label">HTTP address</label>
+              <input type="text" class="form-control" id="webInput" value="">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="infoModalLabel">New App (Integration)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newEntryForm">
+            <div class="mb-3">
+              <label for="nameInput" class="form-label">App Name</label>
+              <input type="text" class="form-control" id="nameInput" value="Schenker Drive" required>
+            </div>
+            <div class="mb-3">
+              <label for="loginInput" class="form-label">Login</label>
+              <input type="text" class="form-control" id="loginInput" value="boekestijn2021" required>
+            </div>
+            <div class="mb-3">
+              <label for="passwordInput" class="form-label">Password</label>
+              <input type="password" class="form-control" id="passwordInput" value="boekestijn2021" required>
+            </div>
+            <div class="mb-3">
+              <label for="sourceInput" class="form-label">Source</label>
+              <select class="form-select" id="typeSelect">
+                <option value="Metabase">Metabase</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="customerInput" class="form-label">Customer</label>
+              <input type="text" class="form-control" id="customerInput" value="Schneker">
+            </div>
+            <div class="mb-3">
+              <label for="typeSelect" class="form-label">Type</label>
+              <select class="form-select" id="typeSelect">
+                <option value="Web">Web</option>
+                <option value="Mobile">Mobile</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="uploadInput" class="form-label">APK file</label>
+              <input type="file" class="form-control" id="uploadInput">
+              <label for="uploadInput" class="form-label">HTTP address</label>
+              <input type="text" class="form-control" id="webInput" value="https://schenkersite.com">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="mb-2 bg-link-light text-white">
+    <table class="table table-striped table-light table-hover">
+        <thead>
+          <tr>
+            <th scope="col" width='4%' style="text-align: center;">
+                <input class="form-check-input" type="checkbox" value="" >
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </th>
+            <th scope="col">
+                App
+                <input type="text" class="form-control" placeholder="App name">
+            </th>
+            <th scope="col">
+                Customer
+                <input type="text" class="form-control" placeholder="Customer name">
+            </th>
+            <th scope="col">
+                Passed parameters
+                <input type="text" class="form-control" placeholder="Passed parameters">
+            </th>
+            <th scope="col">
+                Type
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Web</a></li>
+                      <li><a class="dropdown-item" href="#">Mobile</a></li>
+                    </ul>
+                  </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="" >
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Amazon Relay</td>
+            <td>Logistic Solutions Inc.</td>
+            <td>driver_name, driver_surname, current_location, current_activity, document_pdf, vehicle_status</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Ancotrans Driver</td>
+            <td>QuickTransport Co.</td>
+            <td>driver_name, driver_surname, last_stop, next_stop, fuel_level, hours_driven_today</td>
+            <td>Mobile</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Capptions</td>
+            <td>SpeedyCargo Ltd.</td>
+            <td>driver_name, driver_surname, current_speed, route_next_checkpoint, traffic_condition, ETA</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>DFDS - Ferries & Terminals</td>
+            <td>Efficient Routes LLC</td>
+            <td>driver_name, driver_surname, current_location, vehicle_condition, document_pdf, load_weight</td>
+            <td>Mobile</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>DFDS - Logistics Driver</td>
+            <td>Freight Masters Inc.</td>
+            <td>driver_name, driver_surname, destination, expected_arrival_time, document_pdf, cargo_type</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>DSV</td>
+            <td>Premium Logistix</td>
+            <td>driver_name, driver_surname, origin, destination, route_status, rest_times</td>
+            <td>Mobile</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="" >
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Duvenbeck</td>
+            <td>Highway Haulers</td>
+            <td>driver_name, driver_surname, next_service_date, mileage, document_pdf, last_maintenance_check</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>ECT Euromax</td>
+            <td>RouteDirect Services</td>
+            <td>driver_name, driver_surname, vehicle_status, fuel_efficiency, traffic_updates, weather_conditions</td>
+            <td>Mobile</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Schenker Drive</td>
+            <td>Schneker</td>
+            <td>driver_name, driver_surname, current_location, ETA, load_status, document_pdf</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+              <label class="form-check-label" for="flexCheckDefault">
+              </label> 
+            </td>
+            <td>Schenker Tracking</td>
+            <td>Schenker</td>
+            <td>driver_name, driver_surname, current_location, ETA, load_status, document_pdf</td>
+            <td>Web</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>SGA D2D (Dissegna)</td>
+            <td>Cross Country Cargo</td>
+            <td>driver_name, driver_surname, current_traffic_status, time_since_last_stop, document_pdf, vehicle_battery_status</td>
+            <td>Web</td>            
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>Truckcom</td>
+            <td>Global Shipping Co.</td>
+            <td>driver_name, driver_surname, hours_until_rest, current_speed, fuel_status, document_pdf</td>
+            <td>Mobile</td>
+          </tr><tr>
+            <td style="text-align: center;">
+              <input class="form-check-input" type="checkbox" value="">
+                <label class="form-check-label" for="flexCheckDefault">
+                </label> 
+            </td>
+            <td>TX FLEX</td>
+            <td>Reliable Roadways</td>
+            <td>driver_name, driver_surname, temperature_control_status, vehicle_location, shipment_type, document_pdf</td>
+            <td>Web</td>            
+        </tbody>
+      </table>
+</div>
+
+<script type="text/javascript">
+  document.getElementById('newEntryForm').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent the default form submission behavior
+  
+      // Show an alert message
+      alert('Added!');
+  
+      // Close the modal
+      // Assuming 'infoModal' is the ID of your modal
+      bootstrap.Modal.getInstance(document.getElementById('infoModal')).hide();
+  
+      // Here, you can add any other actions you want to perform after the form submission
+  });
+  </script>
+
+  <script type="text/javascript">
+    console.log('script loaded')
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select the checkbox and the div
+        var checkbox = document.getElementById('flexCheckDefault');
+        var actionButtons = document.getElementById('actionButtons');
+    
+        // Event listener for checkbox changes
+        console.log(checkbox, actionButtons)
+        console.log('function :)')
+        checkbox.addEventListener('change', function() {
+            // Toggle the 'invisible' class based on the checkbox state
+            if (checkbox.checked) {
+              console.log('checked')
+              actionButtons.classList.remove('invisible');// Show the div
+            } else {
+              console.log('not checked')
+              actionButtons.classList.add('invisible'); // Hide the div
+            }
+        });
+    });
+    </script>
+    
+  
+
+
+
+{% endblock %}
