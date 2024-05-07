@@ -16,7 +16,7 @@ To install and run <Project Name>, follow these steps:
 Clone this repository to your local machine using the following command:
 
 ```bash
-git clone https://github.com/JakubPaszke/LogInt.git
+git clone https://github.com/micwuj/LogIntProject.git
 ```
 
 ### Step 2: Move to the working directory
@@ -24,7 +24,7 @@ git clone https://github.com/JakubPaszke/LogInt.git
 Simply use cd for that step:
 
 ```bash
-cd LogInt
+cd LogIntProject
 ```
 
 ### Step 3: Docker-compose
