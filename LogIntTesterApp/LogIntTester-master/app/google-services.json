@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "204603812332",
+    "project_id": "loginttester2",
+    "storage_bucket": "loginttester2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204603812332:android:b1c0b90a36d28e4ba978c9",
+        "android_client_info": {
+          "package_name": "com.example.loginttester2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPG4hxss_apO1EFDLBUxtyAnWPQ0KgPTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

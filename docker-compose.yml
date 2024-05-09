@@ -19,5 +19,14 @@ services:
     depends_on:
       - db
 
+  # android-appium:
+  #   image: budtmo/docker-android:emulator_11.0
+  #   container_name: android-appium   
+  #   restart: always 
+  #   ports:
+  #     - "5555:5555"
+  #   devices: 
+  #   - "/dev/kvm:/dev/kvm" 
+
 volumes:
   postgres_data:

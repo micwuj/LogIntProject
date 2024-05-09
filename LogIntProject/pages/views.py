@@ -14,3 +14,6 @@ def sources(request):
 
 def home(request):
     return render(request, 'pages/home.html')
+
+def emulator(request):
+    return render(request, 'pages/emulator.html')

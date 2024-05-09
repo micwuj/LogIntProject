@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1> Emulator </h1>
+<div>To run virtual device</div>
+<div>
+    <ol>
+        <li>Make sure that your machine support virtualization: kvm-ok</li>
+        <li>Switch to root in terminal: sudo -s</li>
+        <li>Run emulator docker server: docker run -d -p 6080:6080 -e EMULATOR_DEVICE="Samsung Galaxy S10" -e WEB_VNC=true --device /dev/kvm --name android-container budtmo/docker-android:emulator_11.0</li>
+        <li><a href="http://localhost:6080/">Go to emulator</a></li>
+    </ol>
+</div>
+
+
+
+{% endblock %}
