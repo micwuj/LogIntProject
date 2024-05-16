@@ -32,7 +32,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'history.apps.HistoryConfig',
+    'home.apps.HomeConfig',
     'pages.apps.PagesConfig',
+    'sources.apps.SourcesConfig',
+    'reports.apps.ReportsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
