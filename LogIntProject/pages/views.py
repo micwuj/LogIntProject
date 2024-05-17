@@ -1,7 +1,4 @@
-from django.shortcuts import render
-
-def index(request):
-    return render(request, 'pages/home.html')
+from django.shortcuts import redirect, render
 
 def history(request):
     return render(request, 'pages/history.html')
@@ -12,8 +9,6 @@ def reports(request):
 def sources(request):
     return render(request, 'pages/sources.html')
 
-def home(request):
-    return render(request, 'pages/home.html')
-
 def emulator(request):
     return render(request, 'pages/emulator.html')
+
