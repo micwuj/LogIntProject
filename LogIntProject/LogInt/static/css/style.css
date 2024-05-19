@@ -322,3 +322,7 @@ ul.navbar-links li a .nav-text{
 	flex-direction: column;
 	align-items: center;
  }
+
+.align-middle {
+	vertical-align: middle !important;
+}

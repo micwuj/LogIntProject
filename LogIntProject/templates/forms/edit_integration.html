@@ -1,0 +1,51 @@
+<div class="modal fade" id="editIntegration" tabindex="-1" aria-labelledby="editIntegrationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIntegrationLabel">Edit Integration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'integration' %}" id="editEntryForm" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="integration_id" id="editIntegrationId">
+                    <div class="mb-3">
+                        <label for="integration_name" class="form-label">Integration Name</label>
+                        <input type="text" class="form-control" name="integration_name" id="editIntegrationName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="app_name" class="form-label">App Name</label>
+                        <input type="text" class="form-control" name="app_name" id="editAppName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sourceInput" class="form-label">Source</label>
+                        <select class="form-select" name="source" id="editSource">
+                            {% for key, value in source_choices.items %}
+                            <option value="{{ key }}"> {{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer" class="form-label">Customer</label>
+                        <input type="text" class="form-control" name="customer" id="editCustomer">
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select class="form-select" name="type" id="editType">
+                            {% for key, value in type_choices.items %}
+                                <option value="{{ key }}"> {{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apk_file" class="form-label">File .apk</label>
+                        <input type="text" class="form-control" name="apk_file" id="editApkFile">
+                        <label for="sh_script" class="form-label">Script .sh</label>
+                        <input type="text" class="form-control" name="sh_script" id="editShScript">
+                    </div>
+                    <button type="submit" value="Send" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
