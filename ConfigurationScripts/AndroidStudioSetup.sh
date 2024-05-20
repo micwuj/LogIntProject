@@ -27,12 +27,14 @@ fi
 if [ ! -f $DOWNLOADS/android-studio* ] && [[  ! -d ${HOME}/android-studio* ]]; then
     (cd $DOWNLOADS; wget $ANDROID_STUDIO_URL;wget $ANDROID_TOOLS_URL)
     # Android command line tools instalation
-    sudo apt install sdkmanager
-    sudo apt install google-android-emulator-installer
+    # sudo apt install sdkmanager
+    # sudo apt install google-android-emulator-installer
+    sudo apt install adb
+    sudo apt install cpu-checker
 
-    mkdir -p $HOME/Android/Sdk/cmdline-tools
-    unzip commandlinetools.zip -d $HOME/Android/Sdk/cmdline-tools
-    mv $HOME/Android/Sdk/cmdline-tools/cmdline-tools $HOME/Android/Sdk/cmdline-tools/latest
+    # mkdir -p $HOME/Android/Sdk/cmdline-tools
+    # unzip commandlinetools.zip -d $HOME/Android/Sdk/cmdline-tools
+    # mv $HOME/Android/Sdk/cmdline-tools/cmdline-tools $HOME/Android/Sdk/cmdline-tools/latest
 
 
 
@@ -47,7 +49,7 @@ fi
 STUDIO_ZIP=` ls $DOWNLOADS | grep "android-studio" `   
 export ANDROID_HOME=$HOME/Android/Sdk       #if avdmanager is not running run this segment
 export ANDROID_SDK_ROOT=$ANDROID_HOME
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+# export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 source $HOME/.bashrc
 
