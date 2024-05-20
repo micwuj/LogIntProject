@@ -12,8 +12,6 @@ def history(request):
 def reports(request):
     return render(request, 'pages/reports.html')
 
-def home(request):
-    return render(request, 'pages/home.html')
-
 def emulator(request):
     return render(request, 'pages/emulator.html')
+
