@@ -1,58 +1,61 @@
 from django.test import TestCase
-from .models import Integration
+from .models import Integration, Integration_Account
+from datetime import datetime
 
-class IntegrationModelTestCase(TestCase):
+class IntegrationModelTest(TestCase):
+
     def setUp(self):
+        # Create a sample Integration instance
         self.integration = Integration.objects.create(
             integration_name='Test Integration',
+            app_name='Test App',
             customer='Test Customer',
-            driver_id=123,
             source='Test Source',
-            apk_file='test.apk',
-            sh_script='test.sh',
-            is_active=True
+            type='Test Type',
+            apk_file='Test APK File',
+            sh_script='Test SH Script',
+            is_active=True,
+            integration_date=datetime.now()
         )
 
-    #  Test if variable are correctly assigned
+        # Create a sample Integration_Account instance
+        self.integration_account = Integration_Account.objects.create(
+            driver_id=1,
+            login='test_login',
+            password='test_password',
+            integration=self.integration
+        )
+
     def test_integration_creation(self):
-        self.assertEqual(self.integration.integration_name, 'Test Integration')
-        self.assertEqual(self.integration.customer, 'Test Customer')
-        self.assertEqual(self.integration.driver_id, 123)
-        self.assertEqual(self.integration.source, 'Test Source')
-        self.assertEqual(self.integration.apk_file, 'test.apk')
-        self.assertEqual(self.integration.sh_script, 'test.sh')
-        self.assertTrue(self.integration.is_active)
+        integration = Integration.objects.get(integration_name='Test Integration')
+        self.assertEqual(integration.app_name, 'Test App')
+        self.assertEqual(integration.customer, 'Test Customer')
 
-    # Test for function returning its own name in database
-    def test_string_representation(self):
-        self.assertEqual(str(self.integration), 'Test Integration')
+    def test_integration_editing(self):
+        integration = Integration.objects.get(integration_name='Test Integration')
+        integration.app_name = 'Updated App Name'
+        integration.save()
+        updated_integration = Integration.objects.get(integration_name='Test Integration')
+        self.assertEqual(updated_integration.app_name, 'Updated App Name')
 
-    # Test if blank is_active is set to True by default
-    def test_default_is_active(self):
-        new_integration = Integration.objects.create(
-            integration_name='New Test Integration',
-            customer='New Test Customer',
-            driver_id=456,
-            source='New Test Source',
-            apk_file='new_test.apk',
-            sh_script='new_test.sh'
-        )
-        self.assertTrue(new_integration.is_active)
+    def test_integration_deleting(self):
+        integration = Integration.objects.get(integration_name='Test Integration')
+        integration.delete()
+        self.assertFalse(Integration.objects.filter(integration_name='Test Integration').exists())
 
-    # Test for blank fields (except for is_active which has a default value)
-    def test_blank_fields(self):
-        blank_integration = Integration.objects.create(
-            integration_name='',
-            customer='',
-            driver_id=0,
-            source='',
-            apk_file='',
-            sh_script=''
-        )
-        self.assertEqual(blank_integration.integration_name, '')
-        self.assertEqual(blank_integration.customer, '')
-        self.assertEqual(blank_integration.driver_id, 0)
-        self.assertEqual(blank_integration.source, '')
-        self.assertEqual(blank_integration.apk_file, '')
-        self.assertEqual(blank_integration.sh_script, '')
-        self.assertTrue(blank_integration.is_active)  # should default to True
+    def test_integration_account_creation(self):
+        integration_account = Integration_Account.objects.get(login='test_login')
+        self.assertEqual(integration_account.driver_id, 1)
+        self.assertEqual(integration_account.password, 'test_password')
+
+    def test_integration_account_editing(self):
+        integration_account = Integration_Account.objects.get(login='test_login')
+        integration_account.password = 'updated_password'
+        integration_account.save()
+        updated_account = Integration_Account.objects.get(login='test_login')
+        self.assertEqual(updated_account.password, 'updated_password')
+
+    def test_integration_account_deleting(self):
+        integration_account = Integration_Account.objects.get(login='test_login')
+        integration_account.delete()
+        self.assertFalse(Integration_Account.objects.filter(login='test_login').exists())

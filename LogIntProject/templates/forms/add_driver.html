@@ -1,0 +1,28 @@
+<div class="modal fade" id="addDriver" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel">New Driver</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'integration_add_driver' integration.id %}" id="newEntryForm" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="driver_id" class="form-label">Driver ID</label>
+                        <input type="text" class="form-control" name="driver_id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="driver_login" class="form-label">Login</label>
+                        <input type="text" class="form-control" name="driver_login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="driver_password" class="form-label">Password</label>
+                        <input type="text" class="form-control" name="driver_password" required>
+                    </div>
+                    <button type="submit" value="Send" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
