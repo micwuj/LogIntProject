@@ -23,6 +23,7 @@ def decrypt_password(password):
     
     return decoded_pass
 
+
 def home(request):
     integrations = Integration.objects.all().order_by('-integration_date').filter(is_active=True)
     
@@ -39,7 +40,7 @@ def home(request):
         
     return render(request, 'pages/home.html', context)
 
-def integration(request):
+def add_integration(request):
     if request.method == 'POST':
         integration_name = request.POST['integration_name']
         app_name = request.POST['app_name']
@@ -60,47 +61,13 @@ def integration(request):
             integration_date=timezone.now()
         )
     integration.save()
-        
-        
-    #     # Check if the post request is for editing
-    #     integration_id = request.POST.get('integration_id')
-    #     if integration_id:
-    #         integration = get_object_or_404(Integration, id=integration_id)
-    #         integration.integration_name = integration_name
-    #         integration.app_name = app_name
-    #         integration.source = source
-    #         integration.type = type
-    #         integration.customer = customer
-    #         integration.apk_file = apk_file
-    #         integration.sh_script = sh_script
-    #         integration.integration_date = timezone.now()
-    #         integration.save()
-    #     else:
-    #         integration = Integration(
-    #             integration_name=integration_name,
-    #             app_name=app_name,
-    #             customer=customer,
-    #             source=source,
-    #             type=type,
-    #             apk_file=apk_file,
-    #             sh_script=sh_script,
-    #             integration_date=timezone.now()
-    #         )
-    #         integration.save()
 
-    #     # messages.success(request, 'Your request has been sent!')
+    return redirect('/home')
 
-    # return redirect('/home')
 
-def integration_account(request):
-    if request.method == 'POST':
-        driver_id = request.POST['driver_id']
-        login = encrypt_password(request.POST['login'])
-        password = request.POST['password']
-        
-    driver_already_exist = Integration_Account.objects.all().filter(driver_id=driver_id)
-    if not driver_already_exist:
-        driver = Integration_Account(driver_id=driver_id, login=login, password=password)
-        driver.save()
-    else:
-        pass
+
+
+
+
+
+

@@ -326,3 +326,7 @@ ul.navbar-links li a .nav-text{
 .align-middle {
 	vertical-align: middle !important;
 }
+
+.hold-left{
+	width: 4%;
+}
