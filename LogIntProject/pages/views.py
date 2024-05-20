@@ -12,11 +12,6 @@ def history(request):
 def reports(request):
     return render(request, 'pages/reports.html')
 
-def sources(request):
-    sources = Source.objects.all()
-    return render(request, 'pages/sources.html', {'sources': sources})
-
-
 def home(request):
     return render(request, 'pages/home.html')
 
