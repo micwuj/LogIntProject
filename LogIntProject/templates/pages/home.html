@@ -46,6 +46,7 @@
               <td class="align-middle">{{ integration.type }}</td>
               <td class="align-middle">{{ integration.integration_date|date:"Y-m-d" }}</td>
               <td class="align-middle">
+                <a href= "{% url 'integration_details'  integration.id %}" class="btn btn-primary btn-block">More Info</a>
               </td>
           </tr>
           {% endfor %}  

@@ -64,6 +64,19 @@ def add_integration(request):
 
     return redirect('/home')
 
+def integration_details(request, integration_id):
+    integration = get_object_or_404(Integration, pk=integration_id)
+    drivers = Integration_Account.objects.all()
+    
+    
+    context = {
+        'integration': integration,
+        'drivers': drivers,
+        'type_choices': type_choices,
+        'source_choices': source_choices,
+    }
+    return render(request, 'pages/integration_details.html', context)
+    
 
 
 
