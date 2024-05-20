@@ -77,10 +77,20 @@ def integration_details(request, integration_id):
     }
     return render(request, 'pages/integration_details.html', context)
     
+def edit_integration(request, integration_id):
+    
+    if request.method == 'POST':
+        integration_id = request.POST['integration_id']
+        integration = get_object_or_404(Integration, pk=integration_id)
+        
+        integration.integration_name = request.POST['integration_name']
+        integration.app_name = request.POST['app_name']
+        integration.source = request.POST['source']
+        integration.type = request.POST['type']
+        integration.customer = request.POST['customer']
+        integration.apk_file = request.POST['apk_file']
+        integration.sh_script = request.POST['sh_script']
+        
+        integration.save() 
 
-
-
-
-
-
-
+    return redirect(f'/home/integration{integration_id}')
