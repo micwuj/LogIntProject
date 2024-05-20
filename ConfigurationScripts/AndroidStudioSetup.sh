@@ -66,9 +66,8 @@ STUDIO_DIR=` ls $HOME | grep "android-studio" `
 
 # Android virtual device setup
 chmod +x AvdSetup.sh
-# Create a configuration file for the AVD
-CONFIG_FILE="device_config.ini"
-AVD_LOCATION="$HOME/.android/avd"
+./AvdSetup.sh
+
 
 
 cd $HOME; ./$STUDIO_DIR/bin/studio.sh
