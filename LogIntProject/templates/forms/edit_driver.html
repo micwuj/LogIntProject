@@ -1,0 +1,28 @@
+<div class="modal fade" id="editinfoModal" tabindex="-1" aria-labelledby="editinfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editinfoModalLabel">Edit Driver</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'integration_edit_driver' integration.id %}" id="editDriverForm" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="edit_driver_id" class="form-label">Driver ID</label>
+                        <input type="text" class="form-control" id="edit_driver_id" name="driver_id" required readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_driver_login" class="form-label">Login</label>
+                        <input type="text" class="form-control" id="edit_driver_login" name="driver_login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_driver_password" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="edit_driver_password" name="driver_password" required>
+                    </div>
+                    <button type="submit" value="Send" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

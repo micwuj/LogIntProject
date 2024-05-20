@@ -7,4 +7,5 @@ urlpatterns = [
     path('integration<int:integration_id>', views.integration_details, name='integration_details'),
     path('integration<int:integration_id>/integrationedit', views.edit_integration, name='edit_integration'),
     path('integration<int:integration_id>/add', views.add_driver_account, name='integration_add_driver'),
+    path('integration<int:integration_id>/edit', views.edit_driver_account, name='integration_edit_driver'),
 ]

@@ -109,3 +109,16 @@ def add_driver_account(request, integration_id):
         driver.save()
     
     return redirect(f'/home/integration{integration_id}')
+
+def edit_driver_account(request, integration_id):
+    integration = get_object_or_404(Integration, pk=integration_id)
+
+    if request.method == 'POST':
+        driver_id = request.POST['driver_id']
+        login = request.POST['driver_login']
+        password = request.POST['driver_password']
+    
+    driver = Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration)
+    driver.save()
+    
+    return redirect(f'/home/integration{integration_id}')

@@ -36,7 +36,7 @@
     </table>
     {% include 'forms/edit_integration.html' %}
     {% include 'forms/add_driver.html' %}
-    
+    {% include 'forms/edit_driver.html' %}
 
     <h2> Drivers </h2>
     <div class="mt-5 mb-3 w-25 d-inline">
@@ -81,6 +81,27 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var editButtons = document.querySelectorAll('.edit-driver-btn');
+        var driverIdInput = document.getElementById('edit_driver_id');
+        var loginInput = document.getElementById('edit_driver_login');
+        var passwordInput = document.getElementById('edit_driver_password');
+
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var driverId = button.getAttribute('data-driver-id');
+                var login = button.getAttribute('data-login');
+                var password = button.getAttribute('data-password');
+
+                driverIdInput.value = driverId;
+                loginInput.value = login;
+                passwordInput.value = password;
+            });
+        });
+    });
+</script>
 
 
 {% endblock %}
