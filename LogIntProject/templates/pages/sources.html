@@ -5,4 +5,165 @@
 
 <h1> SOURCES </h1>
 
+<div class="container m-5">
+    <div class="mt-5 mb-3 d-inline">
+        <button id="newButton" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#infoModal">
+            New Source +
+        </button>
+    </div>
+    <div id="actionButtons" class="mb-3 invisible d-inline">
+        <button id="editButton" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#infoModal">
+            Edit
+        </button>        
+        <button class="btn btn-danger" type="button" onclick="deleteSources()">
+            Delete
+        </button>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th scope="col"><input type="checkbox" id="selectAll"></th>
+                <th scope="col">Source Name</th>
+                <th scope="col">Link</th>
+            </tr>
+        </thead>
+        <tbody id="sourceList">
+            {% for source in sources %}
+            <tr data-source-id="{{ source.id }}" data-source-name="{{ source.source_name }}" data-source-link="{{ source.link }}">
+                <td><input type="checkbox" class="form-check-input source-check"></td>
+                <td>{{ source.source_name }}</td>
+                <td>{{ source.link }}</td>
+            </tr>            
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel">New/Edit Source</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="sourceForm">
+                    <input type="hidden" id="sourceId" value="">
+                    <div class="mb-3">
+                        <label for="sourceNameInput" class="form-label">Source Name</label>
+                        <input type="text" class="form-control" id="sourceNameInput" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sourceLinkInput" class="form-label">Source Link</label>
+                        <input type="url" class="form-control" id="sourceLinkInput" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+
+        // checkboxes
+        $('#selectAll').click(function(e) {
+            $('.source-check').prop('checked', $(this).prop('checked'));
+            toggleActionButtons();
+        });
+
+        // Show buttons when checkbox is selected
+        $('.source-check').change(function() {
+            toggleActionButtons();
+        });
+
+        function toggleActionButtons() {
+            if ($('.source-check:checked').length > 0) {
+                $('#actionButtons').removeClass('invisible');
+            } else {
+                $('#actionButtons').addClass('invisible');
+            }
+        }
+        
+        // Prepare for modal edit
+        $('#editButton').click(function() {
+            var checkedRow = $('input.source-check:checked').closest('tr');
+            if (checkedRow.length > 0) {
+                var sourceId = checkedRow.data('source-id');
+                var sourceName = checkedRow.data('source-name');
+                var sourceLink = checkedRow.data('source-link');
+        
+                $('#sourceId').val(sourceId);
+                $('#sourceNameInput').val(sourceName);
+                $('#sourceLinkInput').val(sourceLink);
+                $('#infoModalLabel').text('Edit Source');
+            } else {
+                alert('Please select a source to edit.');
+                $('#infoModal').modal('hide');
+            }
+        });
+
+        // clear for new modal if edit was subbmited before
+        $('#newButton').click(function() {
+            $('#sourceId').val('');
+            $('#sourceNameInput').val('');
+            $('#sourceLinkInput').val('');
+            $('#infoModalLabel').text('New Source');
+        });
+
+        // make actual changes in database - both new and edit
+        $('#sourceForm').on('submit', function (e) {
+            e.preventDefault();
+            let sourceId = $('#sourceId').val();
+            let sourceName = $('#sourceNameInput').val();
+            let sourceLink = $('#sourceLinkInput').val();
+
+            $.ajax({
+                url: sourceId ? '{% url "edit_source" %}' : '{% url "add_source" %}',
+                method: 'POST',
+                data: {
+                    'id': sourceId,
+                    'source_name': sourceName,
+                    'link': sourceLink,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    location.reload(); 
+                },
+                error: function (response) {
+                    alert('Error saving source');
+                }
+            });
+        });
+    });
+
+    // Delete selected sources
+    function deleteSources() {
+        let selectedIds = $('.source-check:checked').map(function() {
+            return $(this).closest('tr').data('source-id');
+        }).get();
+        console.log(selectedIds)
+
+        $.ajax({
+            url: '{% url "delete_source" %}',
+            method: 'POST',
+            traditional: true,
+            data: {
+                'ids': selectedIds,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                location.reload();
+            },
+            error: function(response) {
+                alert('Error deleting sources');
+            }
+        });
+    }
+</script>
+
 {% endblock %}
