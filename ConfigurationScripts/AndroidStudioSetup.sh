@@ -29,8 +29,7 @@ if [ ! -f $DOWNLOADS/android-studio* ] && [[  ! -d ${HOME}/android-studio* ]]; t
     # Android command line tools instalation
     # sudo apt install sdkmanager
     # sudo apt install google-android-emulator-installer
-    sudo apt install adb
-    sudo apt install cpu-checker
+
 
     # mkdir -p $HOME/Android/Sdk/cmdline-tools
     # unzip commandlinetools.zip -d $HOME/Android/Sdk/cmdline-tools
@@ -63,7 +62,8 @@ if [ ! -d $HOME/android-studio ]; then
 fi
 
 STUDIO_DIR=` ls $HOME | grep "android-studio" `
-
+sudo apt install adb
+sudo apt install cpu-checker
 
 
 # Android virtual device setup
