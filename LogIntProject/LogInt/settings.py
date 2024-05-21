@@ -27,7 +27,8 @@ ENCRYPTION_KEY = b'xg1gRCrQplKf2IW9XsWvQeJgo0yD_dcRa182rZz8QIE='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0',
+                 'localhost']
 
 
 # Application definition

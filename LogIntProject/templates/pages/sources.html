@@ -29,7 +29,7 @@
         </thead>
         <tbody id="sourceList">
             {% for source in sources %}
-            <tr data-source-id="{{ source.id }}" data-source-name="{{ source.source_name }}" data-source-link="{{ source.link }}">
+            <tr data-source-name="{{ source.source_name }}" data-source-link="{{ source.link }}">
                 <td><input type="checkbox" class="form-check-input source-check"></td>
                 <td>{{ source.source_name }}</td>
                 <td>{{ source.link }}</td>
@@ -70,6 +70,8 @@
 <script>
     $(document).ready(function () {
 
+        var isEdited = false;
+        var previousSourceName = '';
         // checkboxes
         $('#selectAll').click(function(e) {
             $('.source-check').prop('checked', $(this).prop('checked'));
@@ -93,40 +95,41 @@
         $('#editButton').click(function() {
             var checkedRow = $('input.source-check:checked').closest('tr');
             if (checkedRow.length > 0) {
-                var sourceId = checkedRow.data('source-id');
                 var sourceName = checkedRow.data('source-name');
                 var sourceLink = checkedRow.data('source-link');
-        
-                $('#sourceId').val(sourceId);
+                isEdited = true;
+                previousSourceName = sourceName;
+                
                 $('#sourceNameInput').val(sourceName);
                 $('#sourceLinkInput').val(sourceLink);
                 $('#infoModalLabel').text('Edit Source');
+                // Here, you can use sourceName to identify that this is an edit, not an add
             } else {
                 alert('Please select a source to edit.');
                 $('#infoModal').modal('hide');
             }
         });
-
-        // clear for new modal if edit was subbmited before
+        
         $('#newButton').click(function() {
-            $('#sourceId').val('');
             $('#sourceNameInput').val('');
             $('#sourceLinkInput').val('');
             $('#infoModalLabel').text('New Source');
+            previousSourceName = '';
+            isEdited = false;
+            // Ensure no sourceName is used to indicate a new addition
         });
-
-        // make actual changes in database - both new and edit
+        
         $('#sourceForm').on('submit', function (e) {
-            e.preventDefault();
-            let sourceId = $('#sourceId').val();
+            e.preventDefault()
             let sourceName = $('#sourceNameInput').val();
             let sourceLink = $('#sourceLinkInput').val();
 
+            // Check if sourceName has a value to determine if it's an edit or a new addition
             $.ajax({
-                url: sourceId ? '{% url "edit_source" %}' : '{% url "add_source" %}',
+                url: isEdited ? '{% url "edit_source" %}' : '{% url "add_source" %}',
                 method: 'POST',
                 data: {
-                    'id': sourceId,
+                    'previous_source_name': previousSourceName,
                     'source_name': sourceName,
                     'link': sourceLink,
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
@@ -135,25 +138,22 @@
                     location.reload(); 
                 },
                 error: function (response) {
-                    alert('Error saving source');
+                    alert('Error: ' + response.responseJSON.error);
                 }
             });
         });
     });
-
-    // Delete selected sources
     function deleteSources() {
-        let selectedIds = $('.source-check:checked').map(function() {
-            return $(this).closest('tr').data('source-id');
+        let selectedNames = $('.source-check:checked').map(function() {
+            return $(this).closest('tr').data('source-name');
         }).get();
-        console.log(selectedIds)
-
+    
         $.ajax({
             url: '{% url "delete_source" %}',
             method: 'POST',
             traditional: true,
             data: {
-                'ids': selectedIds,
+                'source_names': selectedNames,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(response) {
