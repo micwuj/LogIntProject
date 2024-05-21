@@ -6,8 +6,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'integration_edit_driver' integration.id %}" id="editDriverForm" method="POST">
+                <form action="{% url 'edit_driver' integration.id %}" id="editDriverForm" method="POST">
                     {% csrf_token %}
+                    <input type="hidden" id="edit_primary_id" name="primary_id">
                     <div class="mb-3">
                         <label for="edit_driver_id" class="form-label">Driver ID</label>
                         <input type="text" class="form-control" id="edit_driver_id" name="driver_id" required readonly>
@@ -26,3 +27,4 @@
         </div>
     </div>
 </div>
+
