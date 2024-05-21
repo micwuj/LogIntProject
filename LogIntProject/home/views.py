@@ -98,7 +98,7 @@ def integration_details(request, integration_id):
         'source_choices': source_choices,
     }
 
-    History(type='Integration', name=integration_name, operation='Added', operation_date=timezone.now()).save()
+    History(type='Integration', name=integration.integration_name, operation='Added', operation_date=timezone.now()).save()
     
     return render(request, 'pages/integration_details.html', context)
     
@@ -189,7 +189,7 @@ def pull_data_from_active_sources():
             print(f"An error occurred: {e}")
 
     # Save the collected data into a JSON file
-    with open('LogIntTesterApp/new_data.json', 'w') as file:
+    with open('Executoner/data/new_data.json', 'w') as file:
         json.dump(all_data, file, indent=4)
 
     print("Data has been successfully saved to new_data.json.")
