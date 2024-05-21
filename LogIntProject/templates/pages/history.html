@@ -1,218 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
-<div class="mb-2 bg-link-light text-black">
-  <h1> HISTORY </h1>
-</div>
 
-
-<!-- Container for the download button -->
-<div class="p-3 mb-2 bg-link-light text-black" id="downloadButtonContainer"></div>
+<h1> History </h1>
 
 <div class="mb-2 bg-link-light text-white">
-    <table class="table table-striped table-light" id="history-table">
+    <table class="table table-striped table-light table-hover">
         <thead>
           <tr>
-            <th scope="col" width='4%' style="text-align: center;">
-                <input class="form-check-input" type="checkbox" value="" id="selectAllCheckbox">
-                <label class="form-check-label" for="selectAllCheckbox">
-                </label> 
-            </th>
-            <th scope="col">Integration Name</th>
-            <th scope="col">Company</th>
-            <th scope="col" style="position: relative;">
-                <!-- Add the filtering button here -->
-                <button id="filterEventBtn" style="border-radius: 10px; padding: 6px 12px; background-color: #fff; color: #6c757d; border: 1px solid #ccc; font-size: 14px; cursor: pointer;">
-                    Filter Events <i class="fa fa-filter" style="margin-left: 5px;"></i>
-                </button>                                              
-                <!-- Add the dropdown here -->
-                <div id="filterDropdown" style="display: none; position: absolute; top: 100%; left: 0; padding: 6px 12px; border: 1px solid #ccc; background-color: #fff; z-index: 100;">
-                    <select id="filterSelect" style="width: 100%; padding: 6px 12px; border-radius: 10px; background-color: #fff; color: #6c757d; border: 1px solid #ccc; font-size: 14px;">
-                        <option value="all">All Events</option>
-                        <option value="lost">Lost Data</option>
-                        <option value="available">Available Data</option>
-                    </select>
-                </div>                
-            </th>
-                
-            <th scope="col" class="sort-date">
-                <button id="sortDateBtn" style="border-radius: 10px; padding: 6px 12px; background-color: #fff; color: #6c757d; border: 1px solid #ccc; font-size: 14px; cursor: pointer;">
-                    Date <span id="sortDirection" style="font-size: 12px;">&#x25B2;</span>
-                </button>
-                                            
-            </th>
+            <th class="align-middle">Type</th>
+            <th class="align-middle">Name</th>
+            <th class="align-middle">Operation</th>
+            <th class="align-middle">Date</th>
           </tr>
         </thead>
+        {% if historys %}
         <tbody>
-          <tr data-event="lost">
-            <td width='4%' style="text-align: center;">
-              <input class="form-check-input data-checkbox" type="checkbox" value="15">
-                <label class="form-check-label" for="flexCheckDefault">
-                </label> 
-            </td>
-            <td>Integracja 1</td>
-            <td>Amazon</td>
-            <td>Lost data</td>
-            <td>15-04-2024</td>
+          {% for history in historys %}
+          <tr>
+              <td class="align-middle">{{ history.type }}</td>
+              <td class="align-middle">{{ history.name }}</td>
+              <td class="align-middle">{{ history.operation }}</td>
+              <td class="align-middle">{{ history.operation_date | date:"Y-m-d" }}</td>
           </tr>
-          <tr data-event="lost">
-            <td width='4%' style="text-align: center;">
-              <input class="form-check-input data-checkbox" type="checkbox" value="15">
-                <label class="form-check-label" for="flexCheckDefault">
-                </label> 
-            </td>
-            <td>Integracja 2</td>
-            <td>TransInt</td>
-            <td>Available data</td>
-            <td>15-03-2023</td>
-          </tr>
-          <tr data-event="lost">
-            <td width='4%' style="text-align: center;">
-              <input class="form-check-input data-checkbox" type="checkbox" value="15">
-                <label class="form-check-label" for="flexCheckDefault">
-                </label> 
-            </td>
-            <td>Integracja 3</td>
-            <td>TransInt</td>
-            <td>Lost data</td>
-            <td>9-05-2024</td>
-          </tr>
-          <tr data-event="lost">
-            <td width='4%' style="text-align: center;">
-              <input class="form-check-input data-checkbox" type="checkbox" value="15">
-                <label class="form-check-label" for="flexCheckDefault">
-                </label> 
-            </td>
-            <td>Integracja 4</td>
-            <td>Relay</td>
-            <td>Lost data</td>
-            <td>15-04-2024</td>
-          </tr>
-          <tr data-event="available">
-            <td width='4%' style="text-align: center;">
-              <input class="form-check-input data-checkbox" type="checkbox" value="15">
-                <label class="form-check-label" for="flexCheckDefault">
-                </label> 
-            </td>
-            <td>Integracja 5</td>
-            <td>Computronik</td>
-            <td>Available data</td>
-            <td>10-04-2024</td>
-          </tr>
-          <!-- Other rows here -->
+          {% endfor %}  
         </tbody>
-      </table>
+      </table>               
+
+      <nav aria-label="Page navigation example">
+        {% if historys.has_other_pages %}
+            <ul class="pagination">
+          {% if historys.has_previous %}
+            <li class="page item">
+              <a href="?page={{historys.previous_page_number}}" class="page-link">&laquo;</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"> &laquo; </a>
+            </li>
+          {% endif %}
+          {% for i in historys.paginator.page_range %}
+            {% if historys.number == i %}
+              <li class="page-item active">
+                  <a class="page-link"> {{i}} </a>
+              </li>
+            {% else %}
+              <li class="page-item">
+                  <a href="?page={{i}}" class="page-link"> {{i}}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if historys.has_next %}
+            <li class="page item">
+              <a href="?page={{historys.next_page_number}}" class="page-link">&raquo;</a>
+            </li>
+            {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link"> &raquo; </a>
+              </li>
+          {% endif %}
+        {% endif %}
+      </nav>
+      {% endif %}
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Show dropdown list when the filter button is clicked
-    const filterEventBtn = document.getElementById('filterEventBtn');
-    const filterDropdown = document.getElementById('filterDropdown');
-
-    filterEventBtn.addEventListener('click', function() {
-        filterDropdown.style.display = 'block';
-    });
-
-    // Filter rows based on the selected option
-    const filterSelect = document.getElementById('filterSelect');
-    filterSelect.addEventListener('change', function() {
-        const selectedOption = this.value;
-        const rows = document.querySelectorAll('tr[data-event]');
-        rows.forEach(function(row) {
-            const event = row.getAttribute('data-event');
-            if (selectedOption === 'all' || selectedOption === event) {
-                row.style.display = 'table-row';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-        filterDropdown.style.display = 'none'; // Hide the dropdown after selecting an option
-    });
-});
-
-function setupSorting() {
-    const table = document.getElementById('history-table');
-    const tbody = table.querySelector('tbody');
-    const rows = tbody.querySelectorAll('tr');
-
-    const sortButton = document.getElementById('sortDateBtn');
-    let ascending = true;
-
-    sortButton.addEventListener('click', function() {
-        const sortedRows = Array.from(rows).sort((rowA, rowB) => {
-            const dateA = rowA.cells[4].textContent;
-            const dateB = rowB.cells[4].textContent;
-            return ascending ? dateA.localeCompare(dateB) : dateB.localeCompare(dateA);
-        });
-
-        while (tbody.firstChild) {
-            tbody.removeChild(tbody.firstChild);
-        }
-
-        tbody.append(...sortedRows);
-
-        ascending = !ascending;
-        updateSortDirection();
-    });
-
-    function updateSortDirection() {
-        const sortDirection = document.getElementById('sortDirection');
-        sortDirection.textContent = ascending ? '▲' : '▼';
-    }
-}
-    
-
-// Function to show download button based on ID selection
-function showDownloadButton(id) {
-    const downloadButtonContainer = document.getElementById('downloadButtonContainer');
-    if (id) {
-        downloadButtonContainer.innerHTML = `<button class="btn btn-success" onclick="downloadData(${id})">Download Available <i class="fa fa-download"></i></button>`;
-    } else {
-        downloadButtonContainer.innerHTML = ''; // Clear the button if no ID is selected
-    }
-}
-
-// Function to simulate download
-function downloadData(id) {
-    // Replace this with your actual download logic
-    console.log("Downloading data for ID:", id);
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    setupSorting();
-});
-
-// Event listener for select all checkbox
-const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-selectAllCheckbox.addEventListener('change', function() {
-    const dataCheckboxes = document.querySelectorAll('.data-checkbox');
-    dataCheckboxes.forEach(function(checkbox) {
-        checkbox.checked = selectAllCheckbox.checked;
-        if (checkbox.checked) {
-            showDownloadButton(checkbox.value);
-        } else {
-            showDownloadButton(null); // Hide button when no ID is selected
-        }
-    });
-});
-
-// Event listener for individual checkboxes
-document.querySelectorAll('.data-checkbox').forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            showDownloadButton(this.value);
-        } else {
-            const checkedCheckboxes = document.querySelectorAll('.data-checkbox:checked');
-            if (checkedCheckboxes.length === 0) {
-                showDownloadButton(null); // Hide button when no ID is selected
-            } else {
-                const lastCheckedId = checkedCheckboxes[checkedCheckboxes.length - 1].value;
-                showDownloadButton(lastCheckedId);
-            }
-        }
-    });
-});
-</script>
 {% endblock %}

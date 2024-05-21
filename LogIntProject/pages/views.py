@@ -1,8 +1,5 @@
 from django.shortcuts import redirect, render
 
-def history(request):
-    return render(request, 'pages/history.html')
-
 def reports(request):
     return render(request, 'pages/reports.html')
 

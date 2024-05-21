@@ -1,28 +1,11 @@
-from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.paginator import Paginator
 from home.models import Integration, Integration_Account
 from .choices import source_choices, type_choices
 from cryptography.fernet import Fernet
 from django.conf import settings
-from datetime import datetime
 from django.utils import timezone
-import pytz
-
-def encrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    encoded_pass = password.encode('utf-8')
-    encrypted_pass = f.encrypt(encoded_pass)
-    
-    return encrypted_pass
-
-def decrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    decrypted_pass = f.decrypt(password)
-    decoded_pass = decrypted_pass.decode('utf-8')
-    
-    return decoded_pass
-
+from history.models import History
 
 def home(request):
     integrations = Integration.objects.all().order_by('-integration_date').filter(is_active=True)
@@ -39,6 +22,20 @@ def home(request):
     }
         
     return render(request, 'pages/home.html', context)
+
+def encrypt_password(password):
+    f = Fernet(settings.ENCRYPTION_KEY)
+    encoded_pass = password.encode('utf-8')
+    encrypted_pass = f.encrypt(encoded_pass)
+    
+    return encrypted_pass
+
+def decrypt_password(password):
+    f = Fernet(settings.ENCRYPTION_KEY)
+    decrypted_pass = f.decrypt(password)
+    decoded_pass = decrypted_pass.decode('utf-8')
+    
+    return decoded_pass
 
 def add_integration(request):
     if request.method == 'POST':
@@ -61,21 +58,9 @@ def add_integration(request):
             integration_date=timezone.now()
         )
     integration.save()
-
+    History(type='Integration', name=integration_name, operation='Added', operation_date=timezone.now()).save()
+    
     return redirect('/home')
-
-def integration_details(request, integration_id):
-    integration = get_object_or_404(Integration, pk=integration_id)
-    drivers = Integration_Account.objects.all()
-    
-    
-    context = {
-        'integration': integration,
-        'drivers': drivers,
-        'type_choices': type_choices,
-        'source_choices': source_choices,
-    }
-    return render(request, 'pages/integration_details.html', context)
     
 def edit_integration(request, integration_id):
     
@@ -91,9 +76,31 @@ def edit_integration(request, integration_id):
         integration.apk_file = request.POST['apk_file']
         integration.sh_script = request.POST['sh_script']
         
-        integration.save() 
+        integration.save()
+        History(type='Integration', name=integration.integration_name, operation='Edited', operation_date=timezone.now()).save()
 
     return redirect(f'/home/integration{integration_id}')
+
+def delete_integration(request, integration_id):
+    integration = get_object_or_404(Integration, pk=integration_id)
+        
+    integration.delete()
+    History(type='Integration', name=integration.integration_name, operation='Deleted', operation_date=timezone.now()).save()
+    
+    return redirect(f'/home')
+
+def integration_details(request, integration_id):
+    integration = get_object_or_404(Integration, pk=integration_id)
+    drivers = Integration_Account.objects.all()
+    
+    context = {
+        'integration': integration,
+        'drivers': drivers,
+        'type_choices': type_choices,
+        'source_choices': source_choices,
+    }
+    
+    return render(request, 'pages/integration_details.html', context)
 
 def add_driver_account(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
@@ -102,23 +109,35 @@ def add_driver_account(request, integration_id):
         driver_id = request.POST['driver_id']
         login = request.POST['driver_login']
         password = encrypt_password(request.POST['driver_password'])
+            
+        Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration).save()
+        History(type='Driver', name=login, operation='Added', operation_date=timezone.now()).save()
         
-    driver_already_exist = Integration_Account.objects.all().filter(driver_id=driver_id)
-    if not driver_already_exist:
-        driver = Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration)
-        driver.save()
-    
     return redirect(f'/home/integration{integration_id}')
 
 def edit_driver_account(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
 
     if request.method == 'POST':
+        primary_id = request.POST['primary_id'] 
         driver_id = request.POST['driver_id']
         login = request.POST['driver_login']
         password = request.POST['driver_password']
     
-    driver = Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration)
-    driver.save()
+        Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=password, integration=integration).save()
+        History(type='Driver', name=login, operation='Edited', operation_date=timezone.now()).save()
     
+    return redirect(f'/home/integration{integration_id}')
+
+def delete_driver_account(request, integration_id):
+    if request.method == 'POST':
+        driver_id = request.POST.get('driver_id')
+        login = request.POST.get('driver_login')
+        integration_id = request.POST.get('integration_id')
+        integration = get_object_or_404(Integration, pk=integration_id) 
+        driver = get_object_or_404(Integration_Account, driver_id=driver_id, integration=integration)
+        
+        driver.delete()
+        History(type='Driver', name=login, operation='Deleted', operation_date=timezone.now()).save()
+         
     return redirect(f'/home/integration{integration_id}')
