@@ -1,11 +1,12 @@
 from datetime import datetime
 from django.db import models
+from sources.models import Source
 
 class Integration(models.Model):
     integration_name = models.CharField(max_length=100)
     app_name = models.CharField(max_length=100)
     customer = models.CharField(max_length=100) 
-    source = models.CharField(max_length=200)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     apk_file = models.CharField(max_length=5000)
     sh_script = models.CharField(max_length=5000)
