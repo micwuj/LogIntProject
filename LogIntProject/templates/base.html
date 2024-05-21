@@ -6,16 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Font Awesome -->
-    {% comment %} <link rel="stylesheet" href="{% static 'css/font.css' %}"> {% endcomment %}
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
     <!-- Bootstrap -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}"> {% endcomment %}
     <!-- Custom -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
     <title>LogInt</title>
 </head>
 <body>
@@ -30,15 +31,12 @@
 		
 		{% endblock %}
 	</div>
-	
 
-    <!-- Footer -->
-    {% comment %} {% include 'partials/_footer.html' %} {% endcomment %}
 
 	<script type="text/javascript">
 		// Get references to DOM elements
 		var menuContainer = document.querySelector('.navbar-container');
-		var menuBtn = document.querySelector('.navbar-header .logo .logoImg i');
+		var menuBtn = document.querySelector('.navbar-header');
 		var body = document.querySelector('body');
 		var toggleBtn = document.querySelector('.btn-container .button');
 		var darkModeText = document.querySelector('.dark-light-mode .text');
