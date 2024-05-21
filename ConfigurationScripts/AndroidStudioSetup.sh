@@ -20,7 +20,8 @@ if java -version &>/dev/null; then
     echo "${GREEN}Java was installed${NC}"
   else
     echo "${GREEN}Installing java${NC}"
-    sudo apt install -y default-jdk
+    sudo apt install openjdk-17-jdk
+
 fi
 
 
@@ -48,7 +49,7 @@ fi
 STUDIO_ZIP=` ls $DOWNLOADS | grep "android-studio" `   
 export ANDROID_HOME=$HOME/Android/Sdk       #if avdmanager is not running run this segment
 export ANDROID_SDK_ROOT=$ANDROID_HOME
-# export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 source $HOME/.bashrc
 
