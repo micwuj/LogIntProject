@@ -1,0 +1,60 @@
+[
+    [
+        {
+            "id": 3279424,
+            "created_at": "2024-05-22T19:06:26.199682+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4196,
+            "type": "trailer change"
+        },
+        {
+            "id": 3279423,
+            "created_at": "2024-05-22T19:04:22.640528+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "trailer change"
+        },
+        {
+            "id": 3279425,
+            "created_at": "2024-05-22T19:06:59.710086+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "load"
+        },
+        {
+            "id": 3279426,
+            "created_at": "2024-05-22T19:07:32.691218+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "load"
+        },
+        {
+            "id": 3279427,
+            "created_at": "2024-05-22T19:08:36.099889+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "unload"
+        },
+        {
+            "id": 3279428,
+            "created_at": "2024-05-22T19:09:06.06499+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "unload"
+        },
+        {
+            "id": 3279429,
+            "created_at": "2024-05-22T19:13:35.23483+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "load"
+        },
+        {
+            "id": 3279430,
+            "created_at": "2024-05-22T19:14:09.265781+02:00",
+            "assignment_id": null,
+            "entered_by_id": 4890,
+            "type": "trailer change"
+        }
+    ]
+]

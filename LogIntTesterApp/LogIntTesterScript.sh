@@ -1,28 +1,41 @@
 #!/bin/bash
 
-adb -e install ./app-debug.apk
+# Ścieżka do pliku .json
+JSON_FILE="../data/data.json"
+
+# Odczytywanie danych z pliku .json
+USERNAME=$(jq -r '.username' $JSON_FILE)
+PASSWORD=$(jq -r '.password' $JSON_FILE)
+STATUS=$(jq -r '.status' $JSON_FILE)
+DATETIME=$(jq -r '.datetime' $JSON_FILE)
+
+# Funkcja do wysyłania tekstu za pomocą adb shell input text
+send_text() {
+    local text="$1"
+    adb shell input text "$(printf '%s' "$text" | sed 's/ /%s/g')"
+}
+
+# Wykonywanie poleceń adb z użyciem odczytanych danych
+adb -e install ../apk_files/app-debug.apk
 adb shell monkey -p com.example.loginttester2 1
 
-adb shell input tap 600 600
-adb shell input text "JohnDoe123"
+adb shell input tap 600 700
+send_text "$USERNAME"
 
-adb shell input tap 600 800
-adb shell input text "Package404"
+adb shell input tap 600 935
+send_text "$PASSWORD"
 
-adb shell input tap 600 1000
-adb shell input text "Loaded"
+adb shell input tap 600 1170
+send_text "$STATUS"
 
-adb shell input tap 600 1200
-adb shell input text "24.05.2024:13:00"
+adb shell input tap 600 1400
+send_text "$DATETIME"
 
 adb shell input keyevent 4
 
-
 adb shell input tap 100 1450
-sleep 1
-adb shell input tap 600 1440
+sleep 2
+adb shell input tap 600 1650
 
-# echo "Press Enter to uninstall app and end script"
-# read
-sleep 1
+sleep 5
 adb -e uninstall com.example.loginttester2
