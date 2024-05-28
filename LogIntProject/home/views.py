@@ -46,19 +46,6 @@ def home(request):
         
     return render(request, 'pages/home.html', context)
 
-def encrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    encoded_pass = password.encode('utf-8')
-    encrypted_pass = f.encrypt(encoded_pass)
-    
-    return encrypted_pass
-
-def decrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    decrypted_pass = f.decrypt(password)
-    decoded_pass = decrypted_pass.decode('utf-8')
-    
-    return decoded_pass
 
 def add_integration(request):
     if request.method == 'POST':
@@ -88,7 +75,7 @@ def add_integration(request):
 
 def integration_details(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
-    drivers = Integration_Account.objects.all()
+    drivers = Integration_Account.objects.filter(integration=integration)
     source_choices = {source.source_name: source.source_name for source in Source.objects.all()}
     
     context = {
@@ -136,7 +123,7 @@ def add_driver_account(request, integration_id):
     if request.method == 'POST':
         driver_id = request.POST['driver_id']
         login = request.POST['driver_login']
-        password = encrypt_password(request.POST['driver_password'])
+        password = request.POST['driver_password']
             
         Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration).save()
         History(type='Driver', name=login, operation='Added', operation_date=timezone.now()).save()

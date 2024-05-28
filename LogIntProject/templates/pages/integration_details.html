@@ -66,7 +66,6 @@
             </thead>
             <tbody>
                 {% for driver in drivers %}
-                    {% if driver.integration.pk == integration.pk %}
                         <tr>
                             <td class="align-middle">{{ driver.driver_id }}</td>
                             <td class="align-middle">{{ driver.login }}</td>
@@ -97,7 +96,6 @@
                                 </form>
                             </td>
                         </tr>
-                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
