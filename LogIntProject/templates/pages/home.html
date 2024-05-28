@@ -5,10 +5,10 @@
 <h1> Home </h1>
 
 <div class="mt-5 mb-3 w-25 d-inline">
-  <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#infoModal" style='margin-bottom: 18px' onclick="uncheckAllCheckboxes()">
+  <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#infoModal" style='margin-bottom: 18px'>
     Add Integration
   </button>
-  <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoModal" style='margin-bottom: 18px'>
+  <button class="btn btn-danger" type="button" onclick="deleteIntegrations()" style='margin-bottom: 18px' disabled>
     Delete
   </button>
 </div>
@@ -28,16 +28,16 @@
             <th class="align-middle">Source</th>
             <th class="align-middle">Type</th>
             <th class="align-middle">Date</th>
-            <th class-'align-middle'>Action</th>
+            <th class='align-middle'>Action</th>
           </tr>
         </thead>
         {% if integrations %}
         <tbody>
           {% for integration in integrations %}
-          <tr>
+          <tr data-integration-pk="{{ integration.pk }}">
               <td style="vertical-align: middle;text-align: center;">
-                  <input class="form-check-input" type="checkbox" value="{{ forloop.counter }}" id="checkbox-{{ forloop.counter }}">
-                    <label class="form-check-label" for="checkbox-{{ forloop.counter }}"></label> 
+                  <input class="form-check-input source-check" type="checkbox" value="{{ forloop.counter }}" id="checkbox-{{ forloop.counter }}" data-pk="{{ integration.pk }}" onclick="toggleDeleteButton()">
+                  <label class="form-check-label" for="checkbox-{{ forloop.counter }}"></label> 
               </td>
               <td class="align-middle">{{ integration.integration_name }}</td>
               <td class="align-middle">{{ integration.app_name }}</td>
@@ -46,7 +46,7 @@
               <td class="align-middle">{{ integration.type }}</td>
               <td class="align-middle">{{ integration.integration_date|date:"Y-m-d" }}</td>
               <td class="align-middle">
-                <a href= "{% url 'integration_details'  integration.id %}" class="btn btn-primary btn-block">More Info</a>
+                <a href="{% url 'integration_details' integration.id %}" class="btn btn-primary btn-block">More Info</a>
               </td>
           </tr>
           {% endfor %}  
@@ -58,7 +58,7 @@
             <ul class="pagination">
           {% if integrations.has_previous %}
             <li class="page item">
-              <a href="?page={{integrations.previous_page_number}}" class="page-link">&laquo;</a>
+              <a href="?page={{ integrations.previous_page_number }}" class="page-link">&laquo;</a>
             </li>
           {% else %}
             <li class="page-item disabled">
@@ -68,19 +68,19 @@
           {% for i in integrations.paginator.page_range %}
             {% if integrations.number == i %}
               <li class="page-item active">
-                  <a class="page-link"> {{i}} </a>
+                  <a class="page-link"> {{ i }} </a>
               </li>
             {% else %}
               <li class="page-item">
-                  <a href="?page={{i}}" class="page-link"> {{i}}</a>
+                  <a href="?page={{ i }}" class="page-link"> {{ i }}</a>
               </li>
             {% endif %}
           {% endfor %}
           {% if integrations.has_next %}
             <li class="page item">
-              <a href="?page={{integrations.next_page_number}}" class="page-link">&raquo;</a>
+              <a href="?page={{ integrations.next_page_number }}" class="page-link">&raquo;</a>
             </li>
-            {% else %}
+          {% else %}
               <li class="page-item disabled">
                   <a class="page-link"> &raquo; </a>
               </li>
@@ -91,21 +91,57 @@
 </div>
 
 <script>
-function uncheckAllCheckboxes() {
-  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(function(checkbox) {
-    checkbox.checked = false;
-  });
-  toggleEditButton();
-}
+  function uncheckAllCheckboxes() {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = false;
+    });
+    toggleDeleteButton();
+  }
 
-function toggleAllCheckboxes(source) {
-  var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-  checkboxes.forEach(function(checkbox) {
-    checkbox.checked = source.checked;
-  });
-  toggleEditButton();
-}
+  function toggleAllCheckboxes(source) {
+    var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = source.checked;
+    });
+    toggleDeleteButton();
+  }
+
+  function toggleDeleteButton() {
+    var deleteButton = document.querySelector('.btn-danger');
+    var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+    var checked = Array.from(checkboxes).some(function(checkbox) {
+      return checkbox.checked;
+    });
+    if (checked) {
+      deleteButton.removeAttribute('disabled');
+    } else {
+      deleteButton.setAttribute('disabled', 'disabled');
+    }
+  }
+  
+  function deleteIntegrations() {
+    var selectedPks = $('.source-check:checked').map(function() {
+      return $(this).data('pk');
+    }).get();
+  
+    $.ajax({
+      url: '{% url "home_delete_integration" %}',
+      method: 'POST',
+      traditional: true,
+      data: {
+        'integration_pks': selectedPks,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      success: function(response) {
+        uncheckAllCheckboxes();
+        location.reload();
+      },
+      error: function(response) {
+        alert('Error deleting integrations');
+      }
+    });
+  }
 </script>
 
 {% endblock %}
