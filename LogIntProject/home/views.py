@@ -9,6 +9,7 @@ from sources.models import Source
 import requests
 import json
 from history.models import History
+from django.views.decorators.csrf import csrf_exempt
 
 
 def encrypt_password(password):
@@ -24,8 +25,6 @@ def decrypt_password(password):
     decoded_pass = decrypted_pass.decode('utf-8')
     
     return decoded_pass
-
-
 
 def home(request):
     integrations = Integration.objects.all().order_by('-integration_date').filter(is_active=True)
@@ -45,20 +44,6 @@ def home(request):
     print(pull_data_from_active_sources())
         
     return render(request, 'pages/home.html', context)
-
-def encrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    encoded_pass = password.encode('utf-8')
-    encrypted_pass = f.encrypt(encoded_pass)
-    
-    return encrypted_pass
-
-def decrypt_password(password):
-    f = Fernet(settings.ENCRYPTION_KEY)
-    decrypted_pass = f.decrypt(password)
-    decoded_pass = decrypted_pass.decode('utf-8')
-    
-    return decoded_pass
 
 def add_integration(request):
     if request.method == 'POST':
@@ -101,7 +86,7 @@ def integration_details(request, integration_id):
     History(type='Integration', name=integration.integration_name, operation='Added', operation_date=timezone.now()).save()
     
     return render(request, 'pages/integration_details.html', context)
-    
+ 
 def edit_integration(request, integration_id):
     
     if request.method == 'POST':
@@ -130,6 +115,15 @@ def delete_integration(request, integration_id):
     
     return redirect(f'/home')
 
+@csrf_exempt
+def home_delete_integration(request):
+    if request.method == 'POST':
+        integrations_pks = request.POST.getlist('integration_pks')
+        for integration_pk in integrations_pks:
+            Integration.objects.filter(pk=integration_pk).delete()
+            
+        return redirect(f'/home')
+
 def add_driver_account(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
 
@@ -156,7 +150,6 @@ def edit_driver_account(request, integration_id):
         History(type='Driver', name=login, operation='Edited', operation_date=timezone.now()).save()
     
     return redirect(f'/home/integration{integration_id}')
-
 
 def delete_driver_account(request, integration_id):
     if request.method == 'POST':
