@@ -45,6 +45,7 @@ def home(request):
         
     return render(request, 'pages/home.html', context)
 
+
 def add_integration(request):
     if request.method == 'POST':
         integration_name = request.POST['integration_name']
@@ -73,7 +74,7 @@ def add_integration(request):
 
 def integration_details(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
-    drivers = Integration_Account.objects.all()
+    drivers = Integration_Account.objects.filter(integration=integration)
     source_choices = {source.source_name: source.source_name for source in Source.objects.all()}
     
     context = {
@@ -130,7 +131,7 @@ def add_driver_account(request, integration_id):
     if request.method == 'POST':
         driver_id = request.POST['driver_id']
         login = request.POST['driver_login']
-        password = encrypt_password(request.POST['driver_password'])
+        password = request.POST['driver_password']
             
         Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration).save()
         History(type='Driver', name=login, operation='Added', operation_date=timezone.now()).save()

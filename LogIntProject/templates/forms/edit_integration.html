@@ -11,15 +11,15 @@
                     <input type="hidden" name="integration_id" value="{{ integration.pk }}">
                     <div class="mb-3">
                         <label for="integration_name" class="form-label">Integration Name</label>
-                        <input type="text" class="form-control" name="integration_name" value={{ integration.integration_name }} required>
+                        <input type="text" class="form-control" name="integration_name" value="{{ integration.integration_name }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="app_name" class="form-label">App Name</label>
-                        <input type="text" class="form-control" name="app_name" value={{ integration.app_name }} required>
+                        <input type="text" class="form-control" name="app_name" value="{{ integration.app_name }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="sourceInput" class="form-label">Source</label>
-                        <select class="form-select" name="source" value={{ integration.source }}>
+                        <select class="form-select" name="source" value="{{ integration.source }}">
                             <option selected hidden>{{integration.source}}</option>
                             {% for key, value in source_choices.items %}
                             <option value="{{ key }}"> {{ value }}</option>
