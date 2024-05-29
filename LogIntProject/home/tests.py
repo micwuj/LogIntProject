@@ -9,14 +9,17 @@ from .views import (
 from sources.models import Source
 from django.utils import timezone
 
+
 class IntegrationViewsTestCase(TestCase):
 
     def setUp(self):
+
         self.factory = RequestFactory()
         self.user = User.objects.create_user(
             username='testuser', email='test@example.com', password='testpassword')
         self.source = Source.objects.create(
             source_name='Test Source', link='http://testsource.com')
+
         self.integration = Integration.objects.create(
             integration_name='Test Integration',
             app_name='Test App',

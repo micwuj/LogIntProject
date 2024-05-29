@@ -6,11 +6,8 @@ from cryptography.fernet import Fernet
 from django.conf import settings
 from django.utils import timezone
 from sources.models import Source
-import requests
-import json
 from history.models import History
 from django.views.decorators.csrf import csrf_exempt
-
 
 def encrypt_password(password):
     f = Fernet(settings.ENCRYPTION_KEY)
@@ -47,7 +44,6 @@ def home(request):
     }
 
     return render(request, 'pages/home.html', context)
-
 
 def add_integration(request):
     if request.method == 'POST':
