@@ -1,19 +1,25 @@
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
+from django.contrib.auth.models import User
 from .models import Integration, Integration_Account
+from .views import (
+    add_integration, integration_details, edit_integration, delete_integration,
+    add_driver_account, edit_driver_account, delete_driver_account, home_delete_integration
+)
 from sources.models import Source
-from datetime import datetime
-from unittest.mock import patch, Mock, mock_open
-import json
-from home.tasks import pull_data_from_active_resources_scheduled
+from django.utils import timezone
 
-class IntegrationModelTest(TestCase):
+
+class IntegrationViewsTestCase(TestCase):
 
     def setUp(self):
+
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(
+            username='testuser', email='test@example.com', password='testpassword')
         self.source = Source.objects.create(
-            source_name = 'Test Source',
-            link = 'http://example.com'
-        )
-        # Create a sample Integration instance
+            source_name='Test Source', link='http://testsource.com')
+
         self.integration = Integration.objects.create(
             integration_name='Test Integration',
             app_name='Test App',
@@ -23,47 +29,109 @@ class IntegrationModelTest(TestCase):
             apk_file='Test APK File',
             sh_script='Test SH Script',
             is_active=True,
-            integration_date=datetime.now()
+            integration_date=timezone.now()
         )
 
-        # Create a sample Integration_Account instance
-        self.integration_account = Integration_Account.objects.create(
-            driver_id=1,
-            login='test_login',
-            password='test_password',
-            integration=self.integration
+    def test_add_integration_view(self):
+        url = reverse('integration')
+        request = self.factory.post(url, {
+            'integration_name': 'Test Integration 2',
+            'app_name': 'Test App 2',
+            'source': self.source.source_name,
+            'type': 'Test Type 2',
+            'customer': 'Test Customer 2',
+            'apk_file': 'Test APK File 2',
+            'sh_script': 'Test SH Script 2'
+        })
+        request.user = self.user
+        response = add_integration(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_integration_details_view(self):
+        url = reverse('integration_details', args=[self.integration.id])
+        request = self.factory.get(url)
+        request.user = self.user
+        response = integration_details(request, self.integration.id)
+        self.assertEqual(response.status_code, 200)  # Success status
+
+    def test_edit_integration_view(self):
+        url = reverse('edit_integration', args=[self.integration.id])
+        request = self.factory.post(url, {
+            'integration_id': self.integration.pk,
+            'integration_name': 'Updated Integration Name',
+            'app_name': 'Updated App Name',
+            'source': self.source.source_name,
+            'type': 'Updated Type',
+            'customer': 'Updated Customer',
+            'apk_file': 'Updated APK File',
+            'sh_script': 'Updated SH Script'
+        })
+        request.user = self.user
+        response = edit_integration(request, self.integration.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_delete_integration_view(self):
+        url = reverse('delete_integration', args=[self.integration.pk])
+        request = self.factory.post(url)
+        request.user = self.user
+        response = delete_integration(request, self.integration.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_add_driver_account_view(self):
+        url = reverse('add_driver', args=[self.integration.pk])
+        request = self.factory.post(url, {
+            'driver_id': 1,
+            'driver_login': 'test_driver_login',
+            'driver_password': 'test_driver_password'
+        })
+        request.user = self.user
+        response = add_driver_account(request, self.integration.pk)
+        self.assertEqual(response.status_code, 302)  # Redirect status
+
+    def test_edit_driver_account_view(self):
+        integration_account = Integration_Account.objects.create(
+            driver_id=1, login='test_driver_login', password='test_driver_password', integration=self.integration)
+        url = reverse('edit_driver', args=[self.integration.pk])
+        request = self.factory.post(url, {
+            'primary_id': integration_account.pk,
+            'driver_id': 2,
+            'driver_login': 'updated_driver_login',
+            'driver_password': 'updated_driver_password'
+        })
+        request.user = self.user
+        response = edit_driver_account(request, self.integration.id)
+        self.assertEqual(response.status_code, 302)
+
+    def test_delete_driver_account_view(self):
+        integration_account = Integration_Account.objects.create(
+            driver_id=1, login='test_driver_login', password='test_driver_password', integration=self.integration)
+        url = reverse('delete_driver', args=[self.integration.id])
+        request = self.factory.post(url, {
+            'driver_id': integration_account.driver_id,
+            'driver_login': integration_account.login,
+            'integration_id': self.integration.pk
+        })
+        request.user = self.user
+        response = delete_driver_account(request, self.integration.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_home_delete_integration_view(self):
+        # Creating another integration to test bulk deletion
+        integration2 = Integration.objects.create(
+            integration_name='Test Integration 2',
+            app_name='Test App 2',
+            customer='Test Customer 2',
+            source=self.source,
+            type='Test Type 2',
+            apk_file='Test APK File 2',
+            sh_script='Test SH Script 2',
+            is_active=True,
+            integration_date=timezone.now()
         )
-
-    def test_integration_creation(self):
-        integration = Integration.objects.get(integration_name='Test Integration')
-        self.assertEqual(integration.app_name, 'Test App')
-        self.assertEqual(integration.customer, 'Test Customer')
-
-    def test_integration_editing(self):
-        integration = Integration.objects.get(integration_name='Test Integration')
-        integration.app_name = 'Updated App Name'
-        integration.save()
-        updated_integration = Integration.objects.get(integration_name='Test Integration')
-        self.assertEqual(updated_integration.app_name, 'Updated App Name')
-
-    def test_integration_deleting(self):
-        integration = Integration.objects.get(integration_name='Test Integration')
-        integration.delete()
-        self.assertFalse(Integration.objects.filter(integration_name='Test Integration').exists())
-
-    def test_integration_account_creation(self):
-        integration_account = Integration_Account.objects.get(login='test_login')
-        self.assertEqual(integration_account.driver_id, 1)
-        self.assertEqual(integration_account.password, 'test_password')
-
-    def test_integration_account_editing(self):
-        integration_account = Integration_Account.objects.get(login='test_login')
-        integration_account.password = 'updated_password'
-        integration_account.save()
-        updated_account = Integration_Account.objects.get(login='test_login')
-        self.assertEqual(updated_account.password, 'updated_password')
-
-    def test_integration_account_deleting(self):
-        integration_account = Integration_Account.objects.get(login='test_login')
-        integration_account.delete()
-        self.assertFalse(Integration_Account.objects.filter(login='test_login').exists())
+        url = reverse('home_delete_integration')
+        request = self.factory.post(url, {'integration_pks': [self.integration.pk, integration2.pk]})
+        request.user = self.user
+        response = home_delete_integration(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Integration.objects.filter(pk=self.integration.pk).exists())
+        self.assertFalse(Integration.objects.filter(pk=integration2.pk).exists())
