@@ -6,11 +6,8 @@ from cryptography.fernet import Fernet
 from django.conf import settings
 from django.utils import timezone
 from sources.models import Source
-import requests
-import json
 from history.models import History
 from django.views.decorators.csrf import csrf_exempt
-
 
 def encrypt_password(password):
     f = Fernet(settings.ENCRYPTION_KEY)
@@ -41,7 +38,6 @@ def home(request):
         'type_choices': type_choices,
     }
 
-    print(pull_data_from_active_sources())
         
     return render(request, 'pages/home.html', context)
 
@@ -164,26 +160,3 @@ def delete_driver_account(request, integration_id):
         History(type='Driver', name=login, operation='Deleted', operation_date=timezone.now()).save()
          
     return redirect(f'/home/integration{integration_id}')
-
-def pull_data_from_active_sources():
-    unique_sources = {integration.source for integration in Integration.objects.all()}
-    all_data = []
-    for source in unique_sources:
-        url = source.link
-        headers = {
-            'X-Metabase-Session': '7ff69bc5-0d55-4216-b643-6cb992a249d0',
-            'Content-Type': 'application/json'
-        }
-        try:
-            response = requests.post(url, headers=headers)
-            response.raise_for_status()  # Raises an HTTPError for bad responses
-            data = response.json()  # Gets the JSON response
-            all_data.append(data)  # Append the data to the list
-        except requests.RequestException as e:
-            print(f"An error occurred: {e}")
-
-    # Save the collected data into a JSON file
-    with open('Executoner/data/new_data.json', 'w') as file:
-        json.dump(all_data, file, indent=4)
-
-    print("Data has been successfully saved to new_data.json.")
