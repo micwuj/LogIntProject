@@ -5,10 +5,15 @@
 <h1> Home </h1>
 
 <div class="mt-5 mb-3 w-25 d-inline">
-  <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#infoModal" style='margin-bottom: 18px'>
+  <button class="btn btn-success mb-3 me-2" type="button" data-bs-toggle="modal" data-bs-target="#infoModal">
     Add Integration
   </button>
-  <button class="btn btn-danger" type="button" onclick="deleteIntegrations()" style='margin-bottom: 18px' disabled>
+  {% if show_inactive %}
+    <a class="btn btn-primary mb-3 me-2" type="button" href="?show_inactive=false">Show Active</a>
+  {% else %}
+    <a class="btn btn-primary mb-3 me-2" type="button" href="?show_inactive=true">Show Inactive</a>
+  {% endif %}
+  <button class="btn btn-danger mb-3" type="button" onclick="deleteIntegrations()" disabled>
     Delete
   </button>
 </div>

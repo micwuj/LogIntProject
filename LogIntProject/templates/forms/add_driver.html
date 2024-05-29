@@ -1,3 +1,5 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+
 <div class="modal fade" id="addDriver" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'add_driver' integration.id %}" id="newEntryForm" method="POST">
+                <form action="{% url 'add_driver' integration.id %}" id="newEntryForm" method="POST" onsubmit="return validatePasswords()">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="driver_id" class="form-label">Driver ID</label>
@@ -18,11 +20,24 @@
                     </div>
                     <div class="mb-3">
                         <label for="driver_password" class="form-label">Password</label>
-                        <input type="password" class="form-control" name="driver_password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="driver_password" id="driver_password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('driver_password')">
+                                <i id="passwordVisibilityIcon" class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="driver_password_2" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" name="driver_password_2" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="driver_password_2" id="driver_password_2" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('driver_password_2')">
+                                <i id="confirmPasswordVisibilityIcon" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="passwordError" class="text-danger" style="display: none;">
+                        Passwords do not match.
                     </div>
                     <button type="submit" value="Send" class="btn btn-primary">Save</button>
                 </form>
@@ -30,3 +45,34 @@
         </div>
     </div>
 </div>
+
+<script>
+    function validatePasswords() {
+        const password = document.getElementById('driver_password').value;
+        const confirmPassword = document.getElementById('driver_password_2').value;
+        const errorElement = document.getElementById('passwordError');
+
+        if (password !== confirmPassword) {
+            errorElement.style.display = 'block';
+            return false;
+        } else {
+            errorElement.style.display = 'none';
+            return true;
+        }
+    }
+
+    function togglePasswordVisibility(fieldId) {
+        const passwordInput = document.getElementById(fieldId);
+        const passwordVisibilityIcon = document.getElementById(fieldId === 'driver_password' ? 'passwordVisibilityIcon' : 'confirmPasswordVisibilityIcon');
+    
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordVisibilityIcon.classList.remove('bi-eye');
+            passwordVisibilityIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordVisibilityIcon.classList.remove('bi-eye-slash');
+            passwordVisibilityIcon.classList.add('bi-eye');
+        }
+    }
+</script>
