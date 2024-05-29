@@ -1,6 +1,11 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
   db:
     image: postgres:13
     volumes:
@@ -9,24 +14,42 @@ services:
       - POSTGRES_DB=logint
       - POSTGRES_USER=logint
       - POSTGRES_PASSWORD=logint
+
   web:
     build: .
-    command: python LogIntProject/manage.py runserver 0.0.0.0:8000
+    working_dir: /code/LogIntProject
+    command: >
+        sh -c "/usr/wait-for-it.sh db 5432 python manage.py migrate &&
+           python manage.py setup_periodic_tasks &&
+           python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+      - redis
 
-  # android-appium:
-  #   image: budtmo/docker-android:emulator_11.0
-  #   container_name: android-appium   
-  #   restart: always 
-  #   ports:
-  #     - "5555:5555"
-  #   devices: 
-  #   - "/dev/kvm:/dev/kvm" 
+  celery:
+    build: .
+    working_dir: /code/LogIntProject
+    command: celery -A LogInt worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis
+
+  celerybeat:
+    build: .
+    working_dir: /code/LogIntProject
+    command: /usr/wait-for-it.sh web 8000 celery -A LogInt beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis
+    
 
 volumes:
   postgres_data:

@@ -1,16 +1,24 @@
 from django.test import TestCase
 from .models import Integration, Integration_Account
+from sources.models import Source
 from datetime import datetime
+from unittest.mock import patch, Mock, mock_open
+import json
+from home.tasks import pull_data_from_active_resources_scheduled
 
 class IntegrationModelTest(TestCase):
 
     def setUp(self):
+        self.source = Source.objects.create(
+            source_name = 'Test Source',
+            link = 'http://example.com'
+        )
         # Create a sample Integration instance
         self.integration = Integration.objects.create(
             integration_name='Test Integration',
             app_name='Test App',
             customer='Test Customer',
-            source='Test Source',
+            source=self.source,
             type='Test Type',
             apk_file='Test APK File',
             sh_script='Test SH Script',
