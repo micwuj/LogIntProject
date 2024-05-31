@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'edit_driver' integration.id %}" id="editDriverForm" method="POST">
+                <form action="{% url 'edit_driver' integration.id %}" id="editDriverForm" method="POST" onsubmit="return validateEditPasswords()">
                     {% csrf_token %}
                     <input type="hidden" id="edit_primary_id" name="primary_id">
                     <div class="mb-3">
@@ -18,8 +18,37 @@
                         <input type="text" class="form-control" id="edit_driver_login" name="driver_login" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_driver_password" class="form-label">Password</label>
-                        <input type="text" class="form-control" id="edit_driver_password" name="driver_password" required>
+                        <label for="edit_driver_password" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="edit_driver_password" name="driver_password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('edit_driver_password')">
+                                <i id="passwordVisibilityIcon" class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>                    
+                    <button type="button" class="btn btn-secondary" id="changePasswordButton" onclick="showChangePasswordFields()">Change Password</button>
+                    <div id="changePasswordFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="edit_driver_new_password" class="form-label">New Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="edit_driver_new_password" name="driver_new_password">
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('edit_driver_new_password')">
+                                    <i id="newPasswordVisibilityIcon" class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_driver_new_password_2" class="form-label">Confirm New Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="edit_driver_new_password_2" name="driver_new_password_2">
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('edit_driver_new_password_2')">
+                                    <i id="confirmPasswordVisibilityIcon" class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="editPasswordError" class="text-danger" style="display: none;">
+                            Passwords do not match.
+                        </div>
                     </div>
                     <button type="submit" value="Send" class="btn btn-primary">Save</button>
                 </form>
@@ -28,3 +57,42 @@
     </div>
 </div>
 
+<script>
+    function showChangePasswordFields() {
+        document.getElementById('changePasswordFields').style.display = 'block';
+        document.getElementById('changePasswordButton').style.display = 'none';
+    }
+
+    function validateEditPasswords() {
+        const newPasswordField = document.getElementById('edit_driver_new_password');
+        const confirmPasswordField = document.getElementById('edit_driver_new_password_2');
+        const errorElement = document.getElementById('editPasswordError');
+
+        if (newPasswordField.style.display !== 'none') {
+            const newPassword = newPasswordField.value;
+            const confirmPassword = confirmPasswordField.value;
+
+            if (newPassword !== confirmPassword) {
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                errorElement.style.display = 'none';
+            }
+        }
+        return true;
+    }
+    function togglePasswordVisibility(fieldId) {
+        const passwordInput = document.getElementById(fieldId);
+        const passwordVisibilityIcon = document.getElementById(fieldId === 'edit_driver_password' ? 'passwordVisibilityIcon' : fieldId === 'edit_driver_new_password' ? 'newPasswordVisibilityIcon' : 'confirmPasswordVisibilityIcon');
+    
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordVisibilityIcon.classList.remove('bi-eye');
+            passwordVisibilityIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordVisibilityIcon.classList.remove('bi-eye-slash');
+            passwordVisibilityIcon.classList.add('bi-eye');
+        }
+    }
+</script>

@@ -24,7 +24,11 @@ def decrypt_password(password):
     return decoded_pass
 
 def home(request):
-    integrations = Integration.objects.all().order_by('-integration_date').filter(is_active=True)
+    show_inactive = request.GET.get('show_inactive', 'false') == 'true'
+    if show_inactive:
+        integrations = Integration.objects.filter(is_active=False).order_by('-integration_date')
+    else:
+        integrations = Integration.objects.filter(is_active=True).order_by('-integration_date')
     
     pagination_size = 4
     paginator = Paginator(integrations, pagination_size)
@@ -36,11 +40,10 @@ def home(request):
         'integrations': paged_integrations,
         'source_choices': source_choices,
         'type_choices': type_choices,
+        'show_inactive': show_inactive,
     }
 
-        
     return render(request, 'pages/home.html', context)
-
 
 def add_integration(request):
     if request.method == 'POST':
@@ -79,8 +82,6 @@ def integration_details(request, integration_id):
         'type_choices': type_choices,
         'source_choices': source_choices,
     }
-
-    History(type='Integration', name=integration.integration_name, operation='Added', operation_date=timezone.now()).save()
     
     return render(request, 'pages/integration_details.html', context)
  
@@ -142,8 +143,12 @@ def edit_driver_account(request, integration_id):
         driver_id = request.POST['driver_id']
         login = request.POST['driver_login']
         password = request.POST['driver_password']
-    
-        Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=password, integration=integration).save()
+        new_password = request.POST['driver_new_password']
+
+        if new_password:
+            Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=new_password, integration=integration).save()
+        else:
+            Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=password, integration=integration).save()
         History(type='Driver', name=login, operation='Edited', operation_date=timezone.now()).save()
     
     return redirect(f'/home/integration{integration_id}')
@@ -158,5 +163,42 @@ def delete_driver_account(request, integration_id):
         
         driver.delete()
         History(type='Driver', name=login, operation='Deleted', operation_date=timezone.now()).save()
+         
+    return redirect(f'/home/integration{integration_id}')
+
+def pull_data_from_active_sources():
+    unique_sources = {integration.source for integration in Integration.objects.all()}
+    all_data = []
+    for source in unique_sources:
+        url = source.link
+        headers = {
+            'X-Metabase-Session': '7ff69bc5-0d55-4216-b643-6cb992a249d0',
+            'Content-Type': 'application/json'
+        }
+        try:
+            response = requests.post(url, headers=headers)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            data = response.json()  # Gets the JSON response
+            all_data.append(data)  # Append the data to the list
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+
+    # Save the collected data into a JSON file
+    with open('Executoner/data/new_data.json', 'w') as file:
+        json.dump(all_data, file, indent=4)
+
+    print("Data has been successfully saved to new_data.json.")
+
+@csrf_exempt 
+def activate_deactivate_integration(request, integration_id, operation):
+    integration = get_object_or_404(Integration, pk=integration_id) 
+    if operation == 'Activate':
+        integration.is_active = True
+    else:
+        integration.is_active = False
+        
+    integration.save()
+        
+    History(type='Integration', name=integration.integration_name, operation=operation, operation_date=timezone.now()).save()
          
     return redirect(f'/home/integration{integration_id}')

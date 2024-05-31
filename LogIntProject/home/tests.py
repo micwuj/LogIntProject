@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .models import Integration, Integration_Account
 from .views import (
     add_integration, integration_details, edit_integration, delete_integration,
-    add_driver_account, edit_driver_account, delete_driver_account, home_delete_integration
+    add_driver_account, edit_driver_account, delete_driver_account, home_delete_integration, activate_deactivate_integration
 )
 from sources.models import Source
 from django.utils import timezone
@@ -96,7 +96,8 @@ class IntegrationViewsTestCase(TestCase):
             'primary_id': integration_account.pk,
             'driver_id': 2,
             'driver_login': 'updated_driver_login',
-            'driver_password': 'updated_driver_password'
+            'driver_password': 'updated_driver_password',
+            'driver_new_password': ''
         })
         request.user = self.user
         response = edit_driver_account(request, self.integration.id)
@@ -135,3 +136,22 @@ class IntegrationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Integration.objects.filter(pk=self.integration.pk).exists())
         self.assertFalse(Integration.objects.filter(pk=integration2.pk).exists())
+        
+    def test_activate_integration(self):
+        url = reverse('activate_deactivate_integration', args=[self.integration.pk, 'Activate'])
+        request = self.factory.get(url)
+        request.user = self.user
+        response = activate_deactivate_integration(request, self.integration.pk, 'Activate')
+        self.assertEqual(response.status_code, 302)
+        self.integration.refresh_from_db()
+        self.assertTrue(self.integration.is_active)
+
+    def test_deactivate_integration(self):
+        url = reverse('activate_deactivate_integration', args=[self.integration.pk, 'Deactivate'])
+        request = self.factory.get(url)
+        request.user = self.user
+        response = activate_deactivate_integration(request, self.integration.pk, 'Deactivate')
+        self.assertEqual(response.status_code, 302)
+        self.integration.refresh_from_db()
+        self.assertFalse(self.integration.is_active)
+
