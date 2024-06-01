@@ -8,4 +8,5 @@ urlpatterns = [
     path('sources/', include('sources.urls')),
     path('admin/', admin.site.urls),
     path('history/', include('history.urls')),
+    path('reports/', include('reports.urls')),
 ]

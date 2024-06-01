@@ -1,13 +1,19 @@
+import json
+import pytz
+from requests import request
+import requests
+
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.paginator import Paginator
-from home.models import Integration, Integration_Account
-from .choices import type_choices
 from cryptography.fernet import Fernet
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.utils import timezone
+
 from sources.models import Source
 from history.models import History
-from django.views.decorators.csrf import csrf_exempt
+from home.models import Integration, Integration_Account
+from .choices import type_choices
 
 def encrypt_password(password):
     f = Fernet(settings.ENCRYPTION_KEY)
@@ -68,6 +74,12 @@ def add_integration(request):
             integration_date=timezone.now()
         )
     integration.save()
+    
+    History(type='Integration', 
+            name=integration.integration_name, 
+            operation="Added", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
 
     return redirect('/home')
 
@@ -101,7 +113,11 @@ def edit_integration(request, integration_id):
         integration.sh_script = request.POST['sh_script']
         
         integration.save()
-        History(type='Integration', name=integration.integration_name, operation='Edited', operation_date=timezone.now()).save()
+        History(type='Integration', 
+            name=integration.integration_name, 
+            operation="Edited", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
 
     return redirect(f'/home/integration{integration_id}')
 
@@ -109,7 +125,11 @@ def delete_integration(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
         
     integration.delete()
-    History(type='Integration', name=integration.integration_name, operation='Deleted', operation_date=timezone.now()).save()
+    History(type='Integration', 
+            name=integration.integration_name, 
+            operation="Deleted", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
     
     return redirect(f'/home')
 
@@ -118,7 +138,13 @@ def home_delete_integration(request):
     if request.method == 'POST':
         integrations_pks = request.POST.getlist('integration_pks')
         for integration_pk in integrations_pks:
-            Integration.objects.filter(pk=integration_pk).delete()
+            integration = get_object_or_404(Integration, pk=integration_pk)
+            History(type='Integration', 
+            name=integration.integration_name, 
+            operation="Deleted", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
+            integration.delete()
             
         return redirect(f'/home')
 
@@ -131,7 +157,11 @@ def add_driver_account(request, integration_id):
         password = request.POST['driver_password']
             
         Integration_Account(driver_id=driver_id, login=login, password=password, integration=integration).save()
-        History(type='Driver', name=login, operation='Added', operation_date=timezone.now()).save()
+        History(type='Driver', 
+            name=login, 
+            operation="Added", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
         
     return redirect(f'/home/integration{integration_id}')
 
@@ -149,7 +179,11 @@ def edit_driver_account(request, integration_id):
             Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=new_password, integration=integration).save()
         else:
             Integration_Account(pk=primary_id, driver_id=driver_id, login=login, password=password, integration=integration).save()
-        History(type='Driver', name=login, operation='Edited', operation_date=timezone.now()).save()
+        History(type='Driver', 
+            name=login, 
+            operation="Edited", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
     
     return redirect(f'/home/integration{integration_id}')
 
@@ -162,7 +196,11 @@ def delete_driver_account(request, integration_id):
         driver = get_object_or_404(Integration_Account, driver_id=driver_id, integration=integration)
         
         driver.delete()
-        History(type='Driver', name=login, operation='Deleted', operation_date=timezone.now()).save()
+        History(type='Driver', 
+            name=login, 
+            operation="Deleted", 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
          
     return redirect(f'/home/integration{integration_id}')
 
@@ -176,7 +214,7 @@ def pull_data_from_active_sources():
             'Content-Type': 'application/json'
         }
         try:
-            response = requests.post(url, headers=headers)
+            response = request.post(url, headers=headers)
             response.raise_for_status()  # Raises an HTTPError for bad responses
             data = response.json()  # Gets the JSON response
             all_data.append(data)  # Append the data to the list
@@ -192,13 +230,17 @@ def pull_data_from_active_sources():
 @csrf_exempt 
 def activate_deactivate_integration(request, integration_id, operation):
     integration = get_object_or_404(Integration, pk=integration_id) 
-    if operation == 'Activate':
+    if operation == 'Activated':
         integration.is_active = True
     else:
         integration.is_active = False
         
     integration.save()
-        
-    History(type='Integration', name=integration.integration_name, operation=operation, operation_date=timezone.now()).save()
+
+    History(type='Integration', 
+            name=integration.integration_name, 
+            operation=operation, 
+            operation_date=timezone.now().astimezone(pytz.timezone('Europe/Warsaw'))
+            ).save()
          
     return redirect(f'/home/integration{integration_id}')
