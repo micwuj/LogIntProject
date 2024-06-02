@@ -1,13 +1,40 @@
 import io
+import os
 import pytz
+from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse
 from history.models import History
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import (SimpleDocTemplate, Table, TableStyle)
 from datetime import timedelta, datetime
+
+def add_page_number(canvas, doc):
+    page_num = canvas.getPageNumber()
+    text = f"Page {page_num}"
+    canvas.drawRightString(200 * inch, 20 * inch, text)
+
+def header_footer(canvas, doc):
+    width, height = A4
+    canvas.saveState()
+    
+    canvas.setFont('Helvetica-Bold', 12)
+    logo_path = 'static/img/BOEK_logo.png'
+    if os.path.exists(logo_path):
+        canvas.drawImage(logo_path, 0.5 * inch, height - 1.3 * inch, width=1.5 * inch, height=1.5 * inch, preserveAspectRatio=True, mask='auto')
+    if canvas.getPageNumber() == 1:
+        report_text = "Operations Report"
+        text_width = canvas.stringWidth(report_text, 'Helvetica-Bold', 12)
+        text_x = (width - text_width) / 2
+        canvas.drawString(text_x, height - 0.6 * inch, report_text)
+    
+    canvas.setFont('Helvetica', 9)
+    canvas.drawString(0.5 * inch, 0.75 * inch, f"Generated on: {timezone.now().astimezone(pytz.timezone('Europe/Warsaw')).strftime('%Y-%m-%d %H:%M:%S')}")
+    canvas.drawRightString(width - 0.5 * inch, 0.75 * inch, f"Page {doc.page}")
+    
+    canvas.restoreState()
 
 def generate_pdf(histories):
     buffer = io.BytesIO()
@@ -33,21 +60,22 @@ def generate_pdf(histories):
     
     style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('TOPPADDING', (0, 0), (-1, -1), 5),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white])
     ])
     table.setStyle(style)
     
     elements.append(table)
-    doc.build(elements)
+    doc.build(elements, onFirstPage=header_footer, onLaterPages=header_footer)
     
     buffer.seek(0)
     return buffer
