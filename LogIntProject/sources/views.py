@@ -37,7 +37,7 @@ def edit_source(request):
         if Source.objects.filter(source_name=source_name).exclude(source_name=previous_source_name).exists():
             return JsonResponse({'error': 'Source with this name already exists'}, status=400)
         try:
-            source = Source.objects.get(source_name=source_name)
+            source = Source.objects.get(source_name=previous_source_name)
             source.link = link
             source.save()
             History(type='Source', 
