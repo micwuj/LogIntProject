@@ -6,7 +6,7 @@ class Integration(models.Model):
     integration_name = models.CharField(max_length=100)
     app_name = models.CharField(max_length=100)
     customer = models.CharField(max_length=100) 
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.SET_NULL, null=True)
     type = models.CharField(max_length=100)
     apk_file = models.CharField(max_length=5000)
     sh_script = models.CharField(max_length=5000)

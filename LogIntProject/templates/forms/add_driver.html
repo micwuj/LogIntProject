@@ -8,11 +8,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'add_driver' integration.id %}" id="newEntryForm" method="POST" onsubmit="return validatePasswords()">
+                <form action="{% url 'add_driver' integration.id %}" id="newEntryForm" method="POST" onsubmit="return validateForm()">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="driver_id" class="form-label">Driver ID</label>
-                        <input type="text" class="form-control" name="driver_id" required>
+                        <input type="text" class="form-control" name="driver_id" id="driver_id" required>
+                        <div id="driverIdError" class="text-danger" style="display: none;">
+                            Driver ID must be a number.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="driver_login" class="form-label">Login</label>
@@ -47,18 +50,30 @@
 </div>
 
 <script>
-    function validatePasswords() {
+    function validateForm() {
+        const driverId = document.getElementById('driver_id').value;
         const password = document.getElementById('driver_password').value;
         const confirmPassword = document.getElementById('driver_password_2').value;
-        const errorElement = document.getElementById('passwordError');
+        const driverIdError = document.getElementById('driverIdError');
+        const passwordError = document.getElementById('passwordError');
+
+        let valid = true;
+
+        if (isNaN(driverId)) {
+            driverIdError.style.display = 'block';
+            valid = false;
+        } else {
+            driverIdError.style.display = 'none';
+        }
 
         if (password !== confirmPassword) {
-            errorElement.style.display = 'block';
-            return false;
+            passwordError.style.display = 'block';
+            valid = false;
         } else {
-            errorElement.style.display = 'none';
-            return true;
+            passwordError.style.display = 'none';
         }
+
+        return valid;
     }
 
     function togglePasswordVisibility(fieldId) {
