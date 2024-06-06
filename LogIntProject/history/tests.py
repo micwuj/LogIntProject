@@ -1,9 +1,10 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from django.test import TestCase, Client
 from .models import History
 from django.utils import timezone
 
-class HistoryViewsTestCase(TestCase):
+class HistoryUnitTestCase(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -42,3 +43,42 @@ class HistoryViewsTestCase(TestCase):
 
         with self.assertRaises(History.DoesNotExist):
             History.objects.get(pk=self.history.pk)
+            
+class HistoryIntegrationTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        for i in range(20):
+            History.objects.create(
+                type=f'Test Type {i}',
+                name=f'Test Name {i}',
+                operation=f'Test Operation {i}',
+                operation_date=timezone.now()
+            )
+
+    def test_history_view(self):
+        url = reverse('history')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/history.html')
+        
+        paginator = response.context['historys']
+        self.assertEqual(len(paginator.object_list), 15)
+
+        response = self.client.get(url, {'page': 2})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/history.html')
+        
+        paginator = response.context['historys']
+        self.assertEqual(len(paginator.object_list), 5)
+
+    def test_empty_history_view(self):
+        History.objects.all().delete()
+
+        url = reverse('history')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/history.html')
+        
+        paginator = response.context['historys']
+        self.assertEqual(len(paginator.object_list), 0)
