@@ -1,0 +1,70 @@
+<!-- Your edit modal in the template -->
+<div class="modal fade" id="editStepModal" tabindex="-1" aria-labelledby="editStepModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStepModalLabel">Edit Step</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'edit_step' integration.id %}" id="editStepForm" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="edit_step_id" name="step_pk">
+                    <div class="mb-3">
+                        <label for="edit_step_action" class="form-label">Action</label>
+                        <select class="form-select" id="edit_step_action" name="step_action" required>
+                            {% for key, value in action_choices.items %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_step_img" class="form-label">Screenshot</label>
+                        <input type="file" class="form-control" id="edit_step_img" name="step_img">
+                        <img id="current_step_img" src="" alt="Current Screenshot" class="img-thumbnail mt-2" style="display:none;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_step_input_value" class="form-label">Input Value</label>
+                        <input type="text" class="form-control" id="edit_step_input_value" name="step_input_value" placeholder="Enter Input Value">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Your script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editStepModal = new bootstrap.Modal(document.getElementById('editStepModal'));
+        
+        function openEditStepModal(event) {
+            const button = event.currentTarget;
+            const stepId = button.getAttribute('data-step-id');
+            const stepAction = button.getAttribute('data-step-action');
+            const stepInputValue = button.getAttribute('data-step-input-value');
+            const stepImgUrl = button.getAttribute('data-step-img');
+            
+            document.getElementById('edit_step_id').value = stepId;
+            document.getElementById('edit_step_action').value = stepAction;
+            document.getElementById('edit_step_input_value').value = stepInputValue;
+
+            // Handle displaying the current image
+            const currentStepImg = document.getElementById('current_step_img');
+            if (stepImgUrl) {
+                currentStepImg.src = stepImgUrl;
+                currentStepImg.style.display = 'block';
+            } else {
+                currentStepImg.style.display = 'none';
+            }
+            
+            editStepModal.show();
+        }
+        
+        const editStepBtns = document.querySelectorAll('.edit-step-btn');
+        editStepBtns.forEach(btn => {
+            btn.addEventListener('click', openEditStepModal);
+        });
+    });
+</script>

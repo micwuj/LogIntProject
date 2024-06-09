@@ -12,7 +12,9 @@ from django.utils import timezone
 
 from sources.models import Source
 from history.models import History
+from steps.models import Steps
 from home.models import Integration, Integration_Account
+from steps.models import ACTION_CHOICES
 from .choices import type_choices
 
 def encrypt_password(password):
@@ -85,14 +87,18 @@ def add_integration(request):
 
 def integration_details(request, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
-    drivers = Integration_Account.objects.filter(integration=integration)
+    drivers = Integration_Account.objects.filter(integration=integration).order_by('driver_id')
+    steps = Steps.objects.filter(integration=integration).order_by('step_number')
     source_choices = {source.source_name: source.source_name for source in Source.objects.all()}
+    action_choices = ACTION_CHOICES
     
     context = {
         'integration': integration,
         'drivers': drivers,
         'type_choices': type_choices,
+        'steps': steps,
         'source_choices': source_choices,
+        'action_choices': action_choices,
     }
     
     return render(request, 'pages/integration_details.html', context)
