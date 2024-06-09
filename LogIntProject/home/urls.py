@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+import steps.views as steps_views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -12,5 +13,8 @@ urlpatterns = [
     path('integration<int:integration_id>/add', views.add_driver_account, name='add_driver'),
     path('integration<int:integration_id>/edit', views.edit_driver_account, name='edit_driver'),
     path('integration<int:integration_id>/delete', views.delete_driver_account, name='delete_driver'),
+    path('integration<int:integration_id>/addstep', steps_views.add_step, name='add_step'),
+    path('integration<int:integration_id>/deletestep', steps_views.delete_step, name='delete_step'),
+    path('integration<int:integration_id>/editstep', steps_views.edit_step, name='edit_step'),
 ]
 

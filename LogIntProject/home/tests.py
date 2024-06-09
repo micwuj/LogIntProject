@@ -6,10 +6,8 @@ from .views import (
     add_integration, integration_details, edit_integration, delete_integration,
     add_driver_account, edit_driver_account, delete_driver_account, home_delete_integration, activate_deactivate_integration
 )
-from sources.models import Source
 from django.utils import timezone
 from django.test import TestCase, Client
-from django.utils import timezone
 
 from sources.models import Source
 from history.models import History

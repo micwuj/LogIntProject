@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['0.0.0.0',
 
 INSTALLED_APPS = [
     'history.apps.HistoryConfig',
+    'steps.apps.StepsConfig',
     'home.apps.HomeConfig',
     'pages.apps.PagesConfig',
     'sources.apps.SourcesConfig',
@@ -142,3 +143,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery Configuration
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
