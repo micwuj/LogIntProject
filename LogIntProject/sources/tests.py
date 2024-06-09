@@ -55,11 +55,22 @@ class SourceIntegrationTestCase(TestCase):
 
     def test_add_source_view(self):
         url = reverse('add_source')
+
+        # Simulate a GET request (invalid request)
+        response = self.client.get(url)
+
+        # Assert that the response contains the expected JSON data
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {'error': 'Invalid request'})
+
+        # Now, simulate a POST request (valid request)
         data = {
             'source_name': 'Test Source',
             'link': 'http://example.com'
         }
         response = self.client.post(url, data)
+
+        # Assert that the response contains the expected JSON data
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Source.objects.count(), 1)
         self.assertEqual(Source.objects.first().source_name, 'Test Source')
@@ -127,3 +138,4 @@ class SourceIntegrationTestCase(TestCase):
 
         history2 = History.objects.get(name='Another Source')
         self.assertEqual(history2.operation, 'Deleted')
+
