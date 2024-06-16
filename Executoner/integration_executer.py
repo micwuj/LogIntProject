@@ -5,7 +5,7 @@ import os
 import time
 from subprocess import call
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR'
 
 def install_app(apk_path):
     print("Installing APK:", apk_path)
@@ -49,7 +49,7 @@ def type_in(coordinates, text):
 def monitor_folder(data_folder):
     current_files = set(os.listdir(data_folder))
     while True:
-        time.sleep(1)  # Poll the directory every second
+        time.sleep(1)
         new_files = set(os.listdir(data_folder))
         json_files = [f for f in new_files - current_files if f.endswith('.json')]
 
@@ -58,12 +58,15 @@ def monitor_folder(data_folder):
             json_path = os.path.join(data_folder, json_file)
             with open(json_path, 'r') as file:
                 data = json.load(file)
-                for item in data:
-                    if item['steps']:
-                        install_app(item['apk_file'])
-                        for step in item['steps']:
-                            execute_step(step)
-                        uninstall_app('com.example.dvs_driver_mirror')
+                for entry in data:
+                    for item in entry:
+                        print(item)    
+                        if item['steps']:
+                            install_app(item['apk_file'])
+                            for step in item['steps']:
+                                print(step)
+                                # execute_step(step)
+                            uninstall_app('com.example.dvs_driver_mirror')
             os.remove(json_path)
             current_files.update(json_files)
 
@@ -83,5 +86,5 @@ def execute_step(step):
             tap(coordinates)
 
 if __name__ == "__main__":
-    current_script_directory = os.path.dirname(os.path.abspath(__file__))
-    monitor_folder(current_script_directory)
+    data_folder = os.path.join(os.getcwd(), "Executoner/data")  # Folder do monitorowania
+    monitor_folder(data_folder)
