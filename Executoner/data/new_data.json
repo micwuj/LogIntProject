@@ -1,32 +1,194 @@
 [
     [
         {
-            "id": 3326473,
-            "created_at": "2024-06-10T21:13:18.668481+02:00",
+            "id": 3340294,
+            "created_at": "2024-06-14T22:12:36.335985+02:00",
             "assignment_id": null,
-            "entered_by_id": 2730,
+            "entered_by_id": 277,
+            "type": "trailer change",
+            "script": "script.sh",
+            "apk_file": "dvs_driver_mirror.apk",
+            "steps": [
+                {
+                    "model": "steps.steps",
+                    "pk": 6,
+                    "fields": {
+                        "step_number": 1,
+                        "action": "TYP",
+                        "img": "1_1_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 7,
+                    "fields": {
+                        "step_number": 2,
+                        "action": "TYP",
+                        "img": "1_2_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 8,
+                    "fields": {
+                        "step_number": 3,
+                        "action": "TAP",
+                        "img": "1_3_TAP.png",
+                        "input_value": "",
+                        "integration": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": 3340292,
+            "created_at": "2024-06-14T22:10:02.687252+02:00",
+            "assignment_id": null,
+            "entered_by_id": 277,
+            "type": "unload",
+            "script": "script.sh",
+            "apk_file": "dvs_driver_mirror.apk",
+            "steps": [
+                {
+                    "model": "steps.steps",
+                    "pk": 6,
+                    "fields": {
+                        "step_number": 1,
+                        "action": "TYP",
+                        "img": "1_1_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 7,
+                    "fields": {
+                        "step_number": 2,
+                        "action": "TYP",
+                        "img": "1_2_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 8,
+                    "fields": {
+                        "step_number": 3,
+                        "action": "TAP",
+                        "img": "1_3_TAP.png",
+                        "input_value": "",
+                        "integration": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": 3340293,
+            "created_at": "2024-06-14T22:11:59.080897+02:00",
+            "assignment_id": null,
+            "entered_by_id": 277,
+            "type": "trailer change",
+            "script": "script.sh",
+            "apk_file": "dvs_driver_mirror.apk",
+            "steps": [
+                {
+                    "model": "steps.steps",
+                    "pk": 6,
+                    "fields": {
+                        "step_number": 1,
+                        "action": "TYP",
+                        "img": "1_1_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 7,
+                    "fields": {
+                        "step_number": 2,
+                        "action": "TYP",
+                        "img": "1_2_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 8,
+                    "fields": {
+                        "step_number": 3,
+                        "action": "TAP",
+                        "img": "1_3_TAP.png",
+                        "input_value": "",
+                        "integration": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": 3340295,
+            "created_at": "2024-06-14T22:17:50.615541+02:00",
+            "assignment_id": 67329,
+            "entered_by_id": 3247,
             "type": "tanking"
         },
         {
-            "id": 3326474,
-            "created_at": "2024-06-10T21:14:37.127383+02:00",
+            "id": 3340296,
+            "created_at": "2024-06-14T22:19:01.769199+02:00",
             "assignment_id": null,
-            "entered_by_id": 2177,
-            "type": "trailer change"
+            "entered_by_id": 3949,
+            "type": "tanking"
         },
         {
-            "id": 3326475,
-            "created_at": "2024-06-10T21:15:01.403577+02:00",
+            "id": 3340297,
+            "created_at": "2024-06-14T22:19:54.629006+02:00",
             "assignment_id": null,
-            "entered_by_id": 2177,
-            "type": "trailer change"
-        },
-        {
-            "id": 3326472,
-            "created_at": "2024-06-10T21:13:15.045903+02:00",
-            "assignment_id": 68380,
-            "entered_by_id": 3247,
-            "type": "homebase"
+            "entered_by_id": 173,
+            "type": "load",
+            "script": "script.sh",
+            "apk_file": "dvs_driver_mirror.apk",
+            "steps": [
+                {
+                    "model": "steps.steps",
+                    "pk": 6,
+                    "fields": {
+                        "step_number": 1,
+                        "action": "TYP",
+                        "img": "1_1_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 7,
+                    "fields": {
+                        "step_number": 2,
+                        "action": "TYP",
+                        "img": "1_2_TYP.png",
+                        "input_value": "1",
+                        "integration": 1
+                    }
+                },
+                {
+                    "model": "steps.steps",
+                    "pk": 8,
+                    "fields": {
+                        "step_number": 3,
+                        "action": "TAP",
+                        "img": "1_3_TAP.png",
+                        "input_value": "",
+                        "integration": 1
+                    }
+                }
+            ]
         }
     ]
 ]

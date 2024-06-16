@@ -3,6 +3,8 @@ from home.models import Integration, Integration_Account
 import requests
 import json
 import os
+from steps.models import Steps
+from django.core.serializers import serialize
 
 @shared_task
 def pull_data_from_active_resources_scheduled():
@@ -35,6 +37,8 @@ def pull_data_from_active_resources_scheduled():
                         if customer_driver_account:
                             record['login'] = customer_driver_account.login
                             record['password'] = customer_driver_account.password
+                        steps = Steps.objects.filter(integration=customer_integration).order_by('step_number')
+                        record['steps'] = json.loads(serialize('json', steps))
                     except:
                         pass
                 seen_sources.append(integration.source.link)
