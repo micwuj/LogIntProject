@@ -62,17 +62,17 @@ def monitor_folder(data_folder):
                     for item in entry:
                         print(item)    
                         if item['steps']:
-                            install_app(item['apk_file'])
+                            install_app("./Executoner/apk_files/"+item['apk_file'])
                             for step in item['steps']:
                                 print(step)
-                                # execute_step(step)
+                                execute_step(step)
                             uninstall_app('com.example.dvs_driver_mirror')
             os.remove(json_path)
             current_files.update(json_files)
 
 def execute_step(step):
     action = step['fields']['action']
-    img_path = step['fields']['img']
+    img_path = "/LogIntProject/media/" + step['fields']['img'] # poprawienie
     input_value = step['fields'].get('input_value', '')
     screenshot = capture_screen()
     
