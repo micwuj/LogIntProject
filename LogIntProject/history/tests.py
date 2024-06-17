@@ -6,6 +6,10 @@ from django.utils import timezone
 
 class HistoryUnitTestCase(TestCase):
 
+    def test_str_method(self):
+        expected_str = f"{self.history.type} | {self.history.name} | {self.history.operation}"
+        self.assertEqual(str(self.history), expected_str)
+    
     def setUp(self):
         self.factory = RequestFactory()
         self.history = History.objects.create(

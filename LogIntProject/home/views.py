@@ -220,7 +220,7 @@ def pull_data_from_active_sources():
             'Content-Type': 'application/json'
         }
         try:
-            response = request.post(url, headers=headers)
+            response = requests.post(url, headers=headers)
             response.raise_for_status()  # Raises an HTTPError for bad responses
             data = response.json()  # Gets the JSON response
             all_data.append(data)  # Append the data to the list
