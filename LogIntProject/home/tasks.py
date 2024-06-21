@@ -14,7 +14,6 @@ def pull_data_from_active_resources_scheduled():
         if integration.source.link not in seen_sources:
             url = integration.source.link
             headers = {
-                'X-Metabase-Session': '7ff69bc5-0d55-4216-b643-6cb992a249d0',
                 'Content-Type': 'application/json'
             }
             try:
