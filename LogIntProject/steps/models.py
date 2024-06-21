@@ -21,7 +21,7 @@ class Steps(models.Model):
     integration = models.ForeignKey(Integration, on_delete=models.CASCADE)
     
     def __str__(self):
-        return 'Step number: ' + str(self.step_number) + ' - action:' + self.action
+        return 'Step number: ' + str(self.step_number) + ' - action: ' + self.action
     
     def change_img_name(self, filename):
         _, ext = os.path.splitext(filename)
